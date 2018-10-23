@@ -27,11 +27,7 @@ class InstrumentManager(object):
 
         self._captions = ['freq', 'amp']
 
-        self._measure_data = [
-            [1, 1],
-            [2, 2],
-            [3, 3]
-        ]
+        self._measure_data = list()
 
     def findInstruments(self):
         print('instrument manager: find instruments')
@@ -99,6 +95,11 @@ class InstrumentManager(object):
         self._analyzer.set_marker_mode(1, 'POS')
 
         time.sleep(0.2)
+        self._measure_data = [
+            [1, 1],
+            [2, 2],
+            [3, 3]
+        ]
 
         self._analyzer.set_autocalibrate('ON')
         self._analyzer.set_system_local()
