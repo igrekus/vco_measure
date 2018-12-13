@@ -8,8 +8,8 @@ from os import listdir
 from os.path import isfile, join
 
 # TODO: write class for PNA20
-from analyzer import Analyzer
-from analyzermock import AnalyzerMock
+from pna20 import Pna20
+from pna20mock import Pna20Mock
 
 # MOCK
 mock_enabled = True
@@ -22,7 +22,7 @@ class InstrumentManager(object):
         print('instrument manager: init')
 
         self._address = address
-        self._analyzer: AnalyzerMock = None
+        self._analyzer: Pna20Mock = None
         self._samplePresent = False
 
         self._captions = ['freq', 'amp']
@@ -41,13 +41,13 @@ class InstrumentManager(object):
                 answer = inst.query('*IDN?')
                 model = answer.split(',')[1].strip()
                 if model == 'PNA20':
-                    self._analyzer = Analyzer(addr, answer, inst)
+                    self._analyzer = Pna20(addr, answer, inst)
             except Exception as ex:
                 print(ex)
 
         def find_mocks():
             print(self._address)
-            self._analyzer = AnalyzerMock(address=self._address, idn=',PNA20 mock,')
+            self._analyzer = Pna20Mock(address=self._address, idn=',PNA20 mock,')
 
         if mock_enabled:
             find_mocks()

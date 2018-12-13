@@ -1,7 +1,7 @@
-from analyzer import Analyzer
+from pna20 import Pna20
 
 
-class AnalyzerMock(Analyzer):
+class Pna20Mock(Pna20):
 
     def __init__(self, address: str, idn: str, inst=None):
         super().__init__(address, idn, inst)
