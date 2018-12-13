@@ -1,7 +1,7 @@
 import random
 
 
-class Analyzer(object):
+class Pna20(object):
 
     def __init__(self, address: str, idn: str, inst):
         self._address = address
