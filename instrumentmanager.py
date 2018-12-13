@@ -83,6 +83,7 @@ class InstrumentManager(object):
     def measure(self, params):
         print(f'instrument manager: start measure {params}')
 
+        self._measure_data = list()
         self.measureTask()
 
         print('instrument manager: end measure')
