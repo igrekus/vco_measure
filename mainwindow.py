@@ -1,12 +1,12 @@
 from time import sleep
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog, QAction
-from PyQt5.QtCore import Qt, QStateMachine, QState, pyqtSignal
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout
+from PyQt5.QtCore import Qt, pyqtSignal
 
 from instrumentmanager import InstrumentManager
 from measuremodel import MeasureModel
-from plotwidget import PlotWidget
+from mytools.plotwidget import PlotWidget
 
 
 class MainWindow(QMainWindow):
@@ -27,8 +27,10 @@ class MainWindow(QMainWindow):
         # create models
         self._instrumentManager = InstrumentManager()
         self._mdeasureModel = MeasureModel(parent=self, instrumentManager=self._instrumentManager)
-        self._plotWidget = PlotWidget(parent=self, instrumentManager=self._instrumentManager)
-        self._ui.tabPlot.setLayout(self._plotWidget)
+        self._plotWidget = PlotWidget(parent=self, toolbar=True)
+        self._ui.layoutPlot = QVBoxLayout()
+        self._ui.layoutPlot.addWidget(self._plotWidget)
+        self._ui.tabPlot.setLayout(self._ui.layoutPlot)
 
         self.initDialog()
 
@@ -38,8 +40,7 @@ class MainWindow(QMainWindow):
         self._ui.btnMeasureStart.clicked.connect(self.onBtnMeasureStart)
         self._ui.btnMeasureStop.clicked.connect(self.onBtnMeasureStop)
 
-        self.measurementFinished.connect(self._mdeasureModel.updateModel)
-        self.measurementFinished.connect(self._plotWidget.updatePlot)
+        self.measurementFinished.connect(self.on_measurementFinished)
 
     def initDialog(self):
         self.setupUiSignals()
@@ -105,6 +106,11 @@ class MainWindow(QMainWindow):
     # event handlers
     def resizeEvent(self, event):
         self.refreshView()
+
+    def on_measurementFinished(self):
+        self._mdeasureModel.updateModel()
+        self._plotWidget.clear()
+        self._plotWidget.plot(self._instrumentManager._measure_data[0], self._instrumentManager._measure_data[1])
 
     # TODO: extract to a measurement manager class
     def onBtnSearchInstrumentsClicked(self):
