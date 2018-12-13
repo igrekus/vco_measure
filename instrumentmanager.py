@@ -83,6 +83,7 @@ class InstrumentManager(object):
     def measure(self, params):
         print(f'instrument manager: start measure {params}')
 
+        self._measure_data = list()
         self.measureTask()
 
         print('instrument manager: end measure')
@@ -95,11 +96,7 @@ class InstrumentManager(object):
         self._analyzer.set_marker_mode(1, 'POS')
 
         time.sleep(0.2)
-        self._measure_data = [
-            [1, 1],
-            [2, 2],
-            [3, 3]
-        ]
+        self._measure_data = [[1, 2, 3], [1, 2, 3]]
 
         self._analyzer.set_autocalibrate('ON')
         self._analyzer.set_system_local()
