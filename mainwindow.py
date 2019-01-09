@@ -1,19 +1,15 @@
-from time import sleep
-
 from PyQt5 import uic
+from PyQt5.QtGui import QRegularExpressionValidator
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression
 
-from instrumentmanager import InstrumentManager
+from domain import Domain
+from instrumentcontroller import InstrumentController
 from measuremodel import MeasureModel
 from mytools.plotwidget import PlotWidget
 
 
 class MainWindow(QMainWindow):
-
-    instrumentsFound = pyqtSignal()
-    sampleFound = pyqtSignal()
-    measurementFinished = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -25,31 +21,37 @@ class MainWindow(QMainWindow):
         self._ui = uic.loadUi('mainwindow.ui', self)
 
         # create models
-        self._instrumentManager = InstrumentManager()
-        self._mdeasureModel = MeasureModel(parent=self, instrumentManager=self._instrumentManager)
+        self._domain = Domain(parent=self)
+
+        self._measureModel = MeasureModel(parent=self, domain=self._domain)
+
         self._plotWidget = PlotWidget(parent=self, toolbar=True)
         self._ui.layoutPlot = QVBoxLayout()
         self._ui.layoutPlot.addWidget(self._plotWidget)
         self._ui.tabPlot.setLayout(self._ui.layoutPlot)
 
-        self.initDialog()
+        self._init()
 
-    def setupUiSignals(self):
-        self._ui.btnSearchInstruments.clicked.connect(self.onBtnSearchInstrumentsClicked)
-        self._ui.btnCheckSample.clicked.connect(self.onBtnCheckSample)
-        self._ui.btnMeasureStart.clicked.connect(self.onBtnMeasureStart)
-        self._ui.btnMeasureStop.clicked.connect(self.onBtnMeasureStop)
+    def _init(self):
+        self._setupUi()
 
-        self.measurementFinished.connect(self.on_measurementFinished)
+        self._ui.tableMeasure.setModel(self._measureModel)
 
-    def initDialog(self):
-        self.setupUiSignals()
-
-        self._ui.tableMeasure.setModel(self._mdeasureModel)
-
-        self.modeSearchInstruments()
-
+        self._modeBeforeConnect()
         self.refreshView()
+
+    def _setupUi(self):
+        self._ui.editAnalyzerAddr.setValidator(QRegularExpressionValidator(QRegularExpression(
+            '^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.'
+            '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.'
+            '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.'
+            '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')))
+
+        self._setupSignals()
+        self._modeBeforeConnect()
+
+    def _setupSignals(self):
+        self._domain.measureFinished.connect(self.on_measurementFinished)
 
     # UI utility methods
     def refreshView(self):
@@ -59,31 +61,85 @@ class MainWindow(QMainWindow):
         self._ui.tableMeasure.resizeRowsToContents()
         self._ui.tableMeasure.resizeColumnsToContents()
 
-    def modeSearchInstruments(self):
-        self._ui.btnMeasureStop.hide()
+    def _modeBeforeConnect(self):
         self._ui.btnCheckSample.setEnabled(False)
-        self._ui.btnMeasureStart.setEnabled(False)
+        self._ui.btnStartMeasure.setEnabled(False)
+        self._ui.btnContinue.setEnabled(False)
+        self._ui.btnStartMeasure.show()
+        self._ui.btnContinue.hide()
+        self._ui.spinF1.setEnabled(False)
+        self._ui.spinF2.setEnabled(False)
+        self._ui.spinDF.setEnabled(False)
+        self._ui.spinV1.setEnabled(False)
+        self._ui.spinV2.setEnabled(False)
+        self._ui.spinVdut.setEnabled(False)
+        self._ui.checkV1.setEnabled(False)
+        self._ui.checkV2.setEnabled(False)
+        self._ui.checkVdut.setEnabled(False)
 
-    def modeCheckSample(self):
+    def _modeBeforeCheckSample(self):
         self._ui.btnCheckSample.setEnabled(True)
-        self._ui.btnMeasureStart.show()
-        self._ui.btnMeasureStart.setEnabled(False)
-        self._ui.btnMeasureStop.hide()
-        self._ui.editAnalyzer.setText(self._instrumentManager.getInstrumentNames())
+        self._ui.btnStartMeasure.setEnabled(False)
+        self._ui.btnContinue.setEnabled(False)
+        self._ui.btnStartMeasure.show()
+        self._ui.btnContinue.hide()
+        self._ui.spinF1.setEnabled(True)
+        self._ui.spinF2.setEnabled(True)
+        self._ui.spinDF.setEnabled(True)
+        self._ui.spinV1.setEnabled(self._ui.checkV1.isChecked())
+        self._ui.spinV2.setEnabled(self._ui.checkV2.isChecked())
+        self._ui.spinVdut.setEnabled(self._ui.checkVdut.isChecked())
+        self._ui.checkV1.setEnabled(True)
+        self._ui.checkV2.setEnabled(True)
+        self._ui.checkVdut.setEnabled(True)
 
-    def modeReadyToMeasure(self):
+    def _modeBeforeMeasure(self):
         self._ui.btnCheckSample.setEnabled(False)
-        self._ui.btnMeasureStart.setEnabled(True)
+        self._ui.btnStartMeasure.setEnabled(True)
+        self._ui.btnContinue.setEnabled(False)
+        self._ui.btnStartMeasure.show()
+        self._ui.btnContinue.hide()
+        self._ui.spinF1.setEnabled(True)
+        self._ui.spinF2.setEnabled(True)
+        self._ui.spinDF.setEnabled(True)
+        self._ui.spinV1.setEnabled(self._ui.checkV1.isChecked())
+        self._ui.spinV2.setEnabled(self._ui.checkV2.isChecked())
+        self._ui.spinVdut.setEnabled(self._ui.checkVdut.isChecked())
+        self._ui.checkV1.setEnabled(True)
+        self._ui.checkV2.setEnabled(True)
+        self._ui.checkVdut.setEnabled(True)
 
-    def modeMeasureInProgress(self):
+    def _modeMeaurementInProgress(self):
         self._ui.btnCheckSample.setEnabled(False)
-        self._ui.btnMeasureStart.setVisible(False)
-        self._ui.btnMeasureStop.setVisible(True)
+        self._ui.btnStartMeasure.setEnabled(False)
+        self._ui.btnContinue.setEnabled(False)
+        self._ui.btnStartMeasure.show()
+        self._ui.btnContinue.hide()
+        self._ui.spinF1.setEnabled(False)
+        self._ui.spinF2.setEnabled(False)
+        self._ui.spinDF.setEnabled(False)
+        self._ui.spinV1.setEnabled(False)
+        self._ui.spinV2.setEnabled(False)
+        self._ui.spinVdut.setEnabled(False)
+        self._ui.checkV1.setEnabled(False)
+        self._ui.checkV2.setEnabled(False)
+        self._ui.checkVdut.setEnabled(False)
 
-    def modeMeasureFinished(self):
+    def _modeBeforeContinue(self):
         self._ui.btnCheckSample.setEnabled(False)
-        self._ui.btnMeasureStart.setVisible(False)
-        self._ui.btnMeasureStop.setVisible(True)
+        self._ui.btnStartMeasure.setEnabled(False)
+        self._ui.btnContinue.setEnabled(True)
+        self._ui.btnStartMeasure.hide()
+        self._ui.btnContinue.show()
+        self._ui.spinF1.setEnabled(False)
+        self._ui.spinF2.setEnabled(False)
+        self._ui.spinDF.setEnabled(False)
+        self._ui.spinV1.setEnabled(False)
+        self._ui.spinV2.setEnabled(False)
+        self._ui.spinVdut.setEnabled(False)
+        self._ui.checkV1.setEnabled(False)
+        self._ui.checkV2.setEnabled(False)
+        self._ui.checkVdut.setEnabled(False)
 
     def collectParams(self):
         power = self._ui.spinPowerVolt.value()
@@ -93,63 +149,59 @@ class MainWindow(QMainWindow):
         df = self._ui.spinDF.value()
         return power, control, f1, f2, df
 
-    # instrument control methods
-    def search(self):
-        if not self._instrumentManager.findInstruments():
-            QMessageBox.information(self, "Ошибка",
-                                    "Не удалось найти инструменты, проверьте подключение.\nПодробности в логах.")
-            return False
-
-        print('found all instruments, enabling sample test')
-        return True
-
-    # event handlers
+    # ui event handlers
     def resizeEvent(self, event):
         self.refreshView()
 
+    @pyqtSlot()
+    def on_btnSearchInstruments_clicked(self):
+        if not self._domain.connect():
+            self._failWith('Не удалось найти инструменты, проверьте подключение.\nПодробности в логах.')
+            print('instruments not found')
+            return
+
+        print('found all instruments, enabling sample test')
+        self._ui.editAnalyzer.setText(self._domain.analyzerName)
+        self._modeBeforeCheckSample()
+
+    @pyqtSlot()
+    def on_btnCheckSample_clicked(self):
+        if not self._domain.check():
+            self._failWith('Не удалось найти образец, проверьте подключение.\nПодробности в логах.')
+            print('sample not detected')
+            return
+
+        print('sample found, enabling measurement')
+        self._modeBeforeMeasure()
+        self.refreshView()
+
+    @pyqtSlot()
+    def on_btnStartMeasure_clicked(self):
+        if not self._domain.check():
+            self._failWith('Не удалось найти образец, проверьте подключение.\nПодробности в логах.')
+            print('sample not detected')
+            return
+
+        self._domain.measure()
+        self._modeMeaurementInProgress()
+
+    @pyqtSlot()
+    def on_btnContinue_clicked(self):
+        self._modeBeforeCheckSample()
+
+    @pyqtSlot(str)
+    def on_editAnalyzerAddr_textChanged(self, text):
+        self._domain.analyzerAddress = text
+
+    # measurement event handlers
+    @pyqtSlot()
     def on_measurementFinished(self):
-        self._mdeasureModel.updateModel()
+        print('on meas finish')
+        self._measureModel.init()
         self._plotWidget.clear()
-        self._plotWidget.plot(self._instrumentManager._measure_data[0], self._instrumentManager._measure_data[1])
+        self._plotWidget.plot(self._domain.xs, self._domain.ys)
+        self._modeBeforeContinue()
 
-    # TODO: extract to a measurement manager class
-    def onBtnSearchInstrumentsClicked(self):
-        self.modeSearchInstruments()
-        if not self.search():
-            return
-        self.modeCheckSample()
-        self.instrumentsFound.emit()
-
-    def failWith(self, message):
-        QMessageBox.information(self, "Ошибка", message)
-
-    def onBtnCheckSample(self):
-        if not self._instrumentManager.checkSample():
-            self.failWith("Не удалось найти образец, проверьте подключение.\nПодробности в логах.")
-            print('sample not detected')
-            return
-
-        self.modeReadyToMeasure()
-        self.sampleFound.emit()
-        self.refreshView()
-
-    def onBtnMeasureStart(self):
-        print('start measurement task')
-
-        if not self._instrumentManager.checkSample():
-            self.failWith("Не удалось найти образец, проверьте подключение.\nПодробности в логах.")
-            print('sample not detected')
-            return
-
-        self.modeMeasureInProgress()
-        self._instrumentManager.measure(self.collectParams())
-        self.measurementFinished.emit()
-        self.modeMeasureFinished()
-        self.refreshView()
-
-    def onBtnMeasureStop(self):
-        # TODO implement
-        print('abort measurement task')
-        self.modeCheckSample()
-
-
+    # helpers
+    def _failWith(self, message):
+        QMessageBox.information(self, 'Ошибка', message)
