@@ -1,22 +1,19 @@
-import time
-
 from PyQt5.QtCore import QObject, QRunnable, QThreadPool, pyqtSignal
+from attr import attrs, attrib
 
 from instrumentcontroller import InstrumentController
 
 
-class MeasureContext:
-
-    def __init__(self, model):
-        self._model = model
-
-    def __enter__(self):
-        print('\nacquire analyzer context\n')
-        self._model._analyzer.init_instrument()
-
-    def __exit__(self, *args):
-        print('\nexit analyzer context\n')
-        self._model._analyzer.finish()
+@attrs
+class Params:
+    f1 = attrib(type=float, default=0.0)
+    f2 = attrib(type=float, default=100.0)
+    df = attrib(type=float, default=10.0)
+    v1 = attrib(type=float, default=4.70)
+    v2 = attrib(type=float, default=0.0)
+    vc = attrib(type=float, default=0.0)
+    corr = attrib(type=int, default=20)
+    aver = attrib(type=int, default=0)
 
 
 class Task(QRunnable):
@@ -60,14 +57,14 @@ class Domain(QObject):
         print('check sample presence')
         return self._instruments.test_sample()
 
-    def measure(self):
-        print(f'run measurement')
+    def measure(self, params: Params):
+        print(f'run measurement with {params}')
         self._clear()
-        self._threadPool.start(Task(self._measureFunc, self._processingFunc))
+        self._threadPool.start(Task(self._measureFunc, self._processingFunc, params))
 
-    def _measureFunc(self):
-        print('start measurement task')
-        self._freqs, self._amps = self._instruments.measure()
+    def _measureFunc(self, params: Params):
+        print(f'start measurement task')
+        self._freqs, self._amps = self._instruments.measure(params)
         print('end measurement task')
 
     def _processingFunc(self):

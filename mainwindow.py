@@ -3,8 +3,7 @@ from PyQt5.QtGui import QRegularExpressionValidator
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout
 from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression
 
-from domain import Domain
-from instrumentcontroller import InstrumentController
+from domain import Domain, Params
 from measuremodel import MeasureModel
 from mytools.plotwidget import PlotWidget
 
@@ -141,13 +140,17 @@ class MainWindow(QMainWindow):
         self._ui.checkV2.setEnabled(False)
         self._ui.checkVdut.setEnabled(False)
 
-    def collectParams(self):
-        power = self._ui.spinPowerVolt.value()
-        control = self._ui.spinControlVolt.value()
-        f1 = self._ui.spinF1.value()
-        f2 = self._ui.spinF2.value()
-        df = self._ui.spinDF.value()
-        return power, control, f1, f2, df
+    def _collectParams(self):
+        return Params(
+            f1=self._ui.spinF1.value(),
+            f2=self._ui.spinF2.value(),
+            df=self._ui.spinDF.value(),
+            v1=self._ui.spinV1.value(),
+            v2=self._ui.spinV2.value(),
+            vc=self._ui.spinVdut.value(),
+            corr=self._ui.spinCorr.value(),
+            aver=self._ui.spinAver.value()
+        )
 
     # ui event handlers
     def resizeEvent(self, event):
@@ -182,7 +185,7 @@ class MainWindow(QMainWindow):
             print('sample not detected')
             return
 
-        self._domain.measure()
+        self._domain.measure(self._collectParams())
         self._modeMeaurementInProgress()
 
     @pyqtSlot()
