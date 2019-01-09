@@ -47,8 +47,8 @@ class InstrumentController:
     def test_sample(self):
         return True
 
-    def measure(self):
-        print('measuring')
+    def measure(self, params):
+        print(f'measuring {params}')
         time.sleep(1)
         return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [10, 8, 6, 5, 4, 3, 2, 1.8, 1.5, 1.3]
 
