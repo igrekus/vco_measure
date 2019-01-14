@@ -31,7 +31,6 @@ class InstrumentController:
             except Exception as ex:
                 print('analyzer find error:', ex)
 
-        self._analyzer, self._analyzer_addr = Pna20.try_find()
         if not self._analyzer:
             print('analyzer not found, giving up')
 
