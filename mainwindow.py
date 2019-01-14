@@ -233,7 +233,6 @@ class MainWindow(QMainWindow):
             # plot.set_ylim(pars['ylim'][0], pars['ylim'][1])
             plot.grid(b=True, which='major', color='0.5', linestyle='-')
 
-        print('on meas finish')
         self._measureModel.init()
         self._plotWidget.clear()
         setup_plot(self._plotWidget)
