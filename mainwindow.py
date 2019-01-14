@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression
 from attr import attrs, attrib
 
 from domain import Domain, Params
+from markermodel import MarkerModel
 from measuremodel import MeasureModel
 from mytools.plotwidget import PlotWidget
 from formlayout.formlayout import fedit
@@ -34,6 +35,7 @@ class MainWindow(QMainWindow):
         self._domain = Domain(parent=self)
 
         self._measureModel = MeasureModel(parent=self, domain=self._domain)
+        self._markerModel = MarkerModel(parent=self)
 
         self._plotWidget = PlotWidget(parent=self, toolbar=True)
         self._ui.layoutPlot = QVBoxLayout()
@@ -46,6 +48,7 @@ class MainWindow(QMainWindow):
         self._setupUi()
 
         self._ui.tableMeasure.setModel(self._measureModel)
+        self._ui.tableMarker.setModel(self._markerModel)
 
         self._modeBeforeConnect()
         self.refreshView()
@@ -70,6 +73,9 @@ class MainWindow(QMainWindow):
     def resizeTable(self):
         self._ui.tableMeasure.resizeRowsToContents()
         self._ui.tableMeasure.resizeColumnsToContents()
+
+        self._ui.tableMarker.resizeRowsToContents()
+        self._ui.tableMarker.resizeColumnsToContents()
 
     def _modeBeforeConnect(self):
         self._ui.btnCheckSample.setEnabled(False)
@@ -231,12 +237,18 @@ class MainWindow(QMainWindow):
             plot.set_ylabel('дБц/Гц')
             # plot.set_xlim(pars['xlim'][0], pars['xlim'][1])
             # plot.set_ylim(pars['ylim'][0], pars['ylim'][1])
-            plot.grid(b=True, which='major', color='0.5', linestyle='-')
+            plot.grid(b=True, which='major', color='0.5', linestyle='--')
+
+        def add_markers(plot):
+            print('adding markers', )
+            for marker in self._markerModel.markers:
+                plot.axvline(marker, 0, 1, linewidth=0.8, color='0.3', linestyle='-')
 
         self._measureModel.init()
         self._plotWidget.clear()
         setup_plot(self._plotWidget)
         self._plotWidget.plot(self._domain.xs, self._domain.ys)
+        add_markers(self._plotWidget)
         self._modeBeforeContinue()
 
     # helpers
