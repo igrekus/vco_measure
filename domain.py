@@ -42,12 +42,17 @@ class Domain(QObject):
         self._instruments = InstrumentController()
         self._threadPool = QThreadPool()
 
+        self._offset = 0.0
+
         self._freqs = list()
         self._amps = list()
 
     def _clear(self):
         self._freqs.clear()
         self._amps.clear()
+
+    def applySettings(self, settings):
+        self._offset = settings.offset
 
     def connect(self):
         print('find instruments')
@@ -69,6 +74,7 @@ class Domain(QObject):
 
     def _processingFunc(self):
         print('processing stats')
+        self._amps = list(map(lambda x: x + self._offset, self._amps))
         self.measureFinished.emit()
 
     def rows(self):

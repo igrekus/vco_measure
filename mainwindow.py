@@ -2,10 +2,21 @@ from PyQt5 import uic
 from PyQt5.QtGui import QRegularExpressionValidator
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout
 from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression
+from attr import attrs, attrib
 
 from domain import Domain, Params
 from measuremodel import MeasureModel
 from mytools.plotwidget import PlotWidget
+from formlayout.formlayout import fedit
+
+
+@attrs
+class Settings:
+    offset = attrib(type=float, default=0.0)
+
+    @classmethod
+    def from_values(cls, data):
+        return cls(offset=data[0])
 
 
 class MainWindow(QMainWindow):
@@ -195,6 +206,18 @@ class MainWindow(QMainWindow):
     @pyqtSlot(str)
     def on_editAnalyzerAddr_textChanged(self, text):
         self._domain.analyzerAddress = text
+
+    # action triggers
+    @pyqtSlot()
+    def on_actSettings_triggered(self):
+        data = [
+            ('Оффсет', self._domain._offset)
+        ]
+        values = fedit(data=data, title='Настройки')
+        if not values:
+            return
+
+        self._domain.applySettings(Settings.from_values(values))
 
     # measurement event handlers
     @pyqtSlot()
