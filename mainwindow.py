@@ -1,7 +1,7 @@
 from PyQt5 import uic
 from PyQt5.QtGui import QRegularExpressionValidator
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout
-from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression
+from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression, QModelIndex
 from attr import attrs, attrib
 
 from domain import Domain, Params
@@ -65,6 +65,7 @@ class MainWindow(QMainWindow):
 
     def _setupSignals(self):
         self._domain.measureFinished.connect(self.on_measurementFinished)
+        self._markerModel.dataChanged.connect(self.on_markerChanged)
 
     # UI utility methods
     def refreshView(self):
@@ -225,6 +226,13 @@ class MainWindow(QMainWindow):
 
         self._domain.applySettings(Settings.from_values(values))
 
+    # model signals
+    def on_markerChanged(self, first, last, roles):
+        if not self._domain.xs:
+            return
+
+        self.on_measurementFinished()
+
     # measurement event handlers
     @pyqtSlot()
     def on_measurementFinished(self):
@@ -249,6 +257,11 @@ class MainWindow(QMainWindow):
         setup_plot(self._plotWidget)
         self._plotWidget.plot(self._domain.xs, self._domain.ys)
         add_markers(self._plotWidget)
+
+        self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
+
+        self.refreshView()
+
         self._modeBeforeContinue()
 
     # helpers

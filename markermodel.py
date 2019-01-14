@@ -1,10 +1,11 @@
-from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex, QVariant, pyqtSlot
+from PyQt5.QtCore import Qt, QAbstractTableModel, QVariant
 
 
 class MarkerModel(QAbstractTableModel):
 
     ColName, \
-    ColFreq = range(2)
+    ColFreq, \
+    ColAmp = range(3)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -12,16 +13,15 @@ class MarkerModel(QAbstractTableModel):
         self._headers = ['#', 'Частота', 'дБц/Гц']
 
         self._data = [
-            ['Маркер 1', 1_000.0, 0],
-            ['Маркер 2', 10_000.0, 0],
-            ['Маркер 3', 100_000.0, 0]
+            ['1', 1_000.0, 0],
+            ['2', 10_000.0, 0],
+            ['3', 100_000.0, 0]
         ]
 
-    def init(self):
-        self.beginResetModel()
-        # self.initHeader(self._domain)
-        # self._data = self._domain
-        self.endResetModel()
+    def init(self, amps=None):
+        if amps is not None:
+            self.beginResetModel()
+            self.endResetModel()
 
     def headerData(self, section, orientation, role=None):
         if orientation == Qt.Horizontal:
@@ -38,6 +38,22 @@ class MarkerModel(QAbstractTableModel):
     def columnCount(self, parent=None, *args, **kwargs):
         return 3
 
+    def setData(self, index, value, role):
+        if index.column() == 1 and role == Qt.EditRole:
+            row = index.row()
+            col = index.column()
+            new_value = 0
+            try:
+                new_value = float(value)
+            except Exception as ex:
+                print(ex)
+
+            self._data[row][col] = new_value
+            self.dataChanged.emit(index, index, [])
+            return True
+
+        return False
+
     def data(self, index, role=None):
         if not index.isValid():
             return QVariant()
@@ -47,12 +63,25 @@ class MarkerModel(QAbstractTableModel):
 
         if role == Qt.DisplayRole:
             return QVariant(self._data[row][col])
+        elif role == Qt.EditRole:
+            if col == self.ColFreq:
+                return QVariant(self._data[row][col])
 
         return QVariant()
 
-    @pyqtSlot(name='updateModel')
-    def updateModel(self):
-        self.initModel()
+    def flags(self, index):
+        f = super().flags(index)
+        if index.column() == self.ColFreq:
+            return f | Qt.ItemIsEditable
+        return f
+
+    def updateModel(self, amps):
+        self.beginResetModel()
+
+        for index, amp in enumerate(amps):
+            self._data[index][2] = round(amp, 2)
+
+        self.endResetModel()
 
     @property
     def markers(self):
