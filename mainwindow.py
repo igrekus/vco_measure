@@ -248,7 +248,6 @@ class MainWindow(QMainWindow):
             plot.grid(b=True, which='major', color='0.5', linestyle='--')
 
         def add_markers(plot):
-            print('adding markers', )
             for marker in self._markerModel.markers:
                 plot.axvline(marker, 0, 1, linewidth=0.8, color='0.3', linestyle='-')
 
