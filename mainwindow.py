@@ -199,9 +199,21 @@ class MainWindow(QMainWindow):
     # measurement event handlers
     @pyqtSlot()
     def on_measurementFinished(self):
+
+        def setup_plot(plot):
+            plot.subplots_adjust(bottom=0.150)
+            plot.set_title('Фазовый шум')
+            plot.set_xlabel('Частота, Гц')
+            plot.set_xscale('log')
+            plot.set_ylabel('дБц/Гц')
+            # plot.set_xlim(pars['xlim'][0], pars['xlim'][1])
+            # plot.set_ylim(pars['ylim'][0], pars['ylim'][1])
+            plot.grid(b=True, which='major', color='0.5', linestyle='-')
+
         print('on meas finish')
         self._measureModel.init()
         self._plotWidget.clear()
+        setup_plot(self._plotWidget)
         self._plotWidget.plot(self._domain.xs, self._domain.ys)
         self._modeBeforeContinue()
 
