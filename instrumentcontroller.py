@@ -1,5 +1,6 @@
 import time
 
+from instr.pna20 import Pna20
 
 is_mock = True
 
@@ -12,7 +13,7 @@ class InstrumentController:
 
     def __init__(self, ip='169.254.9.227'):
         self._ip = ip
-        self._analyzer = None
+        self._analyzer: Pna20 = None
 
     def _find_analyzer(self):
         if is_mock:
