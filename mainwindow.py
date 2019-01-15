@@ -235,8 +235,9 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_actSettings_triggered(self):
         data = [
-            ('Оффсет', self._domain._offset)
+            ('Параметр', self._domain._offset)
         ]
+        # TODO сменить единицу измерения частоты отстройки
         values = fedit(data=data, title='Настройки')
         if not values:
             return
@@ -259,7 +260,7 @@ class MainWindow(QMainWindow):
             plot.set_title('Фазовый шум')
             plot.set_xlabel('Частота, Гц')
             plot.set_xscale('log')
-            plot.set_ylabel('дБц/Гц')
+            plot.set_ylabel('дБн/Гц')
             # plot.set_xlim(pars['xlim'][0], pars['xlim'][1])
             # plot.set_ylim(pars['ylim'][0], pars['ylim'][1])
             plot.grid(b=True, which='major', color='0.5', linestyle='--')
