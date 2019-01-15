@@ -8,7 +8,6 @@ from instrumentcontroller import InstrumentController
 class Params:
     f1 = attrib(type=float, default=0.0)
     f2 = attrib(type=float, default=100.0)
-    df = attrib(type=float, default=10.0)
     v1 = attrib(type=float, default=4.70)
     v2 = attrib(type=float, default=0.0)
     vc = attrib(type=float, default=0.0)

@@ -86,10 +86,11 @@ class MainWindow(QMainWindow):
         self._ui.btnContinue.hide()
         self._ui.spinF1.setEnabled(False)
         self._ui.spinF2.setEnabled(False)
-        self._ui.spinDF.setEnabled(False)
         self._ui.spinV1.setEnabled(False)
         self._ui.spinV2.setEnabled(False)
         self._ui.spinVdut.setEnabled(False)
+        self._ui.spinCorr.setEnabled(False)
+        self._ui.spinAver.setEnabled(False)
         self._ui.checkV1.setEnabled(False)
         self._ui.checkV2.setEnabled(False)
         self._ui.checkVdut.setEnabled(False)
@@ -102,10 +103,11 @@ class MainWindow(QMainWindow):
         self._ui.btnContinue.hide()
         self._ui.spinF1.setEnabled(True)
         self._ui.spinF2.setEnabled(True)
-        self._ui.spinDF.setEnabled(True)
         self._ui.spinV1.setEnabled(self._ui.checkV1.isChecked())
         self._ui.spinV2.setEnabled(self._ui.checkV2.isChecked())
         self._ui.spinVdut.setEnabled(self._ui.checkVdut.isChecked())
+        self._ui.spinCorr.setEnabled(True)
+        self._ui.spinAver.setEnabled(True)
         self._ui.checkV1.setEnabled(True)
         self._ui.checkV2.setEnabled(True)
         self._ui.checkVdut.setEnabled(True)
@@ -118,10 +120,11 @@ class MainWindow(QMainWindow):
         self._ui.btnContinue.hide()
         self._ui.spinF1.setEnabled(True)
         self._ui.spinF2.setEnabled(True)
-        self._ui.spinDF.setEnabled(True)
         self._ui.spinV1.setEnabled(self._ui.checkV1.isChecked())
         self._ui.spinV2.setEnabled(self._ui.checkV2.isChecked())
         self._ui.spinVdut.setEnabled(self._ui.checkVdut.isChecked())
+        self._ui.spinCorr.setEnabled(True)
+        self._ui.spinAver.setEnabled(True)
         self._ui.checkV1.setEnabled(True)
         self._ui.checkV2.setEnabled(True)
         self._ui.checkVdut.setEnabled(True)
@@ -134,10 +137,11 @@ class MainWindow(QMainWindow):
         self._ui.btnContinue.hide()
         self._ui.spinF1.setEnabled(False)
         self._ui.spinF2.setEnabled(False)
-        self._ui.spinDF.setEnabled(False)
         self._ui.spinV1.setEnabled(False)
         self._ui.spinV2.setEnabled(False)
         self._ui.spinVdut.setEnabled(False)
+        self._ui.spinCorr.setEnabled(False)
+        self._ui.spinAver.setEnabled(False)
         self._ui.checkV1.setEnabled(False)
         self._ui.checkV2.setEnabled(False)
         self._ui.checkVdut.setEnabled(False)
@@ -150,19 +154,19 @@ class MainWindow(QMainWindow):
         self._ui.btnContinue.show()
         self._ui.spinF1.setEnabled(False)
         self._ui.spinF2.setEnabled(False)
-        self._ui.spinDF.setEnabled(False)
         self._ui.spinV1.setEnabled(False)
         self._ui.spinV2.setEnabled(False)
         self._ui.spinVdut.setEnabled(False)
+        self._ui.spinCorr.setEnabled(False)
+        self._ui.spinAver.setEnabled(False)
         self._ui.checkV1.setEnabled(False)
         self._ui.checkV2.setEnabled(False)
         self._ui.checkVdut.setEnabled(False)
 
     def _collectParams(self):
         return Params(
-            f1=self._ui.spinF1.value(),
-            f2=self._ui.spinF2.value(),
-            df=self._ui.spinDF.value(),
+            f1=self._ui.spinF1.value() * 1000,
+            f2=self._ui.spinF2.value() * 1000,
             v1=self._ui.spinV1.value(),
             v2=self._ui.spinV2.value(),
             vc=self._ui.spinVdut.value(),
@@ -241,8 +245,9 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_actSettings_triggered(self):
         data = [
-            ('Оффсет', self._domain._offset)
+            ('Параметр', self._domain._offset)
         ]
+        # TODO сменить единицу измерения частоты отстройки
         values = fedit(data=data, title='Настройки')
         if not values:
             return
@@ -265,7 +270,7 @@ class MainWindow(QMainWindow):
             plot.set_title('Фазовый шум')
             plot.set_xlabel('Частота, Гц')
             plot.set_xscale('log')
-            plot.set_ylabel('дБц/Гц')
+            plot.set_ylabel('дБн/Гц')
             # plot.set_xlim(pars['xlim'][0], pars['xlim'][1])
             # plot.set_ylim(pars['ylim'][0], pars['ylim'][1])
             plot.grid(b=True, which='major', color='0.5', linestyle='--')
