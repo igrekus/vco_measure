@@ -214,6 +214,19 @@ class MainWindow(QMainWindow):
     def on_editAnalyzerAddr_textChanged(self, text):
         self._domain.analyzerAddress = text
 
+    @pyqtSlot()
+    def on_btnAddMarker_clicked(self):
+        try:
+            self._markerModel.addMarker()
+
+            self.on_measurementFinished()
+        except Exception as ex:
+            print(ex)
+
+    @pyqtSlot()
+    def on_btnDelMarker_clicked(self):
+        print('del')
+
     # action triggers
     @pyqtSlot()
     def on_actSettings_triggered(self):

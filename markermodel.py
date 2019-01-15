@@ -12,6 +12,8 @@ class MarkerModel(QAbstractTableModel):
 
         self._headers = ['#', 'Частота', 'дБц/Гц']
 
+        self._markerIndex = 4
+
         self._data = [
             ['1', 1_000.0, 0],
             ['2', 10_000.0, 0],
@@ -81,6 +83,12 @@ class MarkerModel(QAbstractTableModel):
         for index, amp in enumerate(amps):
             self._data[index][2] = round(amp, 2)
 
+        self.endResetModel()
+
+    def addMarker(self):
+        self.beginResetModel()
+        self._data.append([str(self._markerIndex), 10_000.0, 0])
+        self._markerIndex += 1
         self.endResetModel()
 
     @property
