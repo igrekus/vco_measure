@@ -89,6 +89,9 @@ class Domain(QObject):
         elif col == 2:
             return self._amps[row]
 
+    def ampsForMarkers(self, markers):
+        return [self._amps[self._freqs.index(min(self._freqs, key=lambda x: abs(freq - x)))] for freq in markers]
+
     @property
     def analyzerAddress(self):
         return self._instruments.analyzer_address
