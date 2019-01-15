@@ -111,10 +111,13 @@
               <bool>false</bool>
              </property>
              <property name="suffix">
-              <string> Гц</string>
+              <string> кГц</string>
              </property>
              <property name="maximum">
               <double>1000000000000.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>1.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -131,7 +134,7 @@
               <bool>false</bool>
              </property>
              <property name="suffix">
-              <string> Гц</string>
+              <string> кГц</string>
              </property>
              <property name="maximum">
               <double>1000000000000.000000000000000</double>
@@ -245,6 +248,9 @@
                <property name="suffix">
                 <string> В</string>
                </property>
+               <property name="value">
+                <double>10.500000000000000</double>
+               </property>
               </widget>
              </item>
             </layout>
@@ -300,6 +306,15 @@
            <property name="enabled">
             <bool>false</bool>
            </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>1000</number>
+           </property>
+           <property name="value">
+            <number>10</number>
+           </property>
           </widget>
          </item>
          <item>
@@ -313,6 +328,15 @@
           <widget class="QSpinBox" name="spinAver">
            <property name="enabled">
             <bool>false</bool>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>1</number>
            </property>
           </widget>
          </item>

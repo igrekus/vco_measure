@@ -1,5 +1,3 @@
-import time
-
 from instr.pna20 import Pna20
 
 is_mock = False
@@ -51,27 +49,27 @@ class InstrumentController:
         print(params)
 
         self._analyzer.reset()
-        self._analyzer.source_supply_voltage(supply=1, volt=4.7)
-        self._analyzer.source_supply_status(supply=1, status='ON')
-        self._analyzer.source_supply_voltage(supply=2, volt=0)
-        self._analyzer.source_supply_status(supply=2, status='OFF')
+        self._analyzer.source_supply_voltage(supply=1, volt=params.v1)
+        self._analyzer.source_supply_status(supply=1, status='ON' if params.v1 != 0 else 'OFF')
+        self._analyzer.source_supply_voltage(supply=2, volt=params.v2)
+        self._analyzer.source_supply_status(supply=2, status='ON' if params.v2 != 0.0 else 'OFF')
 
-        self._analyzer.source_tune_dut_voltage(volt=10.5)
-        self._analyzer.source_tune_dut_status('ON')
+        self._analyzer.source_tune_dut_voltage(volt=params.vc)
+        self._analyzer.source_tune_dut_status(status='ON' if params.vc != 0 else 'OFF')
 
         self._analyzer.sense_adc_rosc_source(source='INT')
         self._analyzer.sense_mode(mode='FN')
 
         # self._analyzer.send('sens:pn:freq 600k --- how to detect?')
 
-        self._analyzer.sense_freq_start(mode='FN', freq=10000)
-        self._analyzer.sense_freq_stop(mode='FN', freq=200000)
+        self._analyzer.sense_freq_start(mode='FN', freq=int(params.f1))
+        self._analyzer.sense_freq_stop(mode='FN', freq=int(params.f2))
         self._analyzer.sense_freq_det(mode='FN', value='NEV')
 
         print('*OPC?:', self._analyzer.operation_complete)
 
-        self._analyzer.sense_corrections(mode='FN', corrections=10)
-        self._analyzer.sense_averages(mode='FN', averages=1)
+        self._analyzer.sense_corrections(mode='FN', corrections=params.corr)
+        self._analyzer.sense_averages(mode='FN', averages=params.aver)
         self._analyzer.sense_ppd(mode='FN', value=0)
         self._analyzer.sense_spur_omis(mode='FN', omission='OFF')
         self._analyzer.sense_spur_threshold(mode='FN', threshold=10)

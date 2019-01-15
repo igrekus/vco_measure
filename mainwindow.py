@@ -89,6 +89,8 @@ class MainWindow(QMainWindow):
         self._ui.spinV1.setEnabled(False)
         self._ui.spinV2.setEnabled(False)
         self._ui.spinVdut.setEnabled(False)
+        self._ui.spinCorr.setEnabled(False)
+        self._ui.spinAver.setEnabled(False)
         self._ui.checkV1.setEnabled(False)
         self._ui.checkV2.setEnabled(False)
         self._ui.checkVdut.setEnabled(False)
@@ -104,6 +106,8 @@ class MainWindow(QMainWindow):
         self._ui.spinV1.setEnabled(self._ui.checkV1.isChecked())
         self._ui.spinV2.setEnabled(self._ui.checkV2.isChecked())
         self._ui.spinVdut.setEnabled(self._ui.checkVdut.isChecked())
+        self._ui.spinCorr.setEnabled(True)
+        self._ui.spinAver.setEnabled(True)
         self._ui.checkV1.setEnabled(True)
         self._ui.checkV2.setEnabled(True)
         self._ui.checkVdut.setEnabled(True)
@@ -119,6 +123,8 @@ class MainWindow(QMainWindow):
         self._ui.spinV1.setEnabled(self._ui.checkV1.isChecked())
         self._ui.spinV2.setEnabled(self._ui.checkV2.isChecked())
         self._ui.spinVdut.setEnabled(self._ui.checkVdut.isChecked())
+        self._ui.spinCorr.setEnabled(True)
+        self._ui.spinAver.setEnabled(True)
         self._ui.checkV1.setEnabled(True)
         self._ui.checkV2.setEnabled(True)
         self._ui.checkVdut.setEnabled(True)
@@ -134,6 +140,8 @@ class MainWindow(QMainWindow):
         self._ui.spinV1.setEnabled(False)
         self._ui.spinV2.setEnabled(False)
         self._ui.spinVdut.setEnabled(False)
+        self._ui.spinCorr.setEnabled(False)
+        self._ui.spinAver.setEnabled(False)
         self._ui.checkV1.setEnabled(False)
         self._ui.checkV2.setEnabled(False)
         self._ui.checkVdut.setEnabled(False)
@@ -149,14 +157,16 @@ class MainWindow(QMainWindow):
         self._ui.spinV1.setEnabled(False)
         self._ui.spinV2.setEnabled(False)
         self._ui.spinVdut.setEnabled(False)
+        self._ui.spinCorr.setEnabled(False)
+        self._ui.spinAver.setEnabled(False)
         self._ui.checkV1.setEnabled(False)
         self._ui.checkV2.setEnabled(False)
         self._ui.checkVdut.setEnabled(False)
 
     def _collectParams(self):
         return Params(
-            f1=self._ui.spinF1.value(),
-            f2=self._ui.spinF2.value(),
+            f1=self._ui.spinF1.value() * 1000,
+            f2=self._ui.spinF2.value() * 1000,
             v1=self._ui.spinV1.value(),
             v2=self._ui.spinV2.value(),
             vc=self._ui.spinVdut.value(),
