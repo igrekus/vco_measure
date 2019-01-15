@@ -1,10 +1,11 @@
 from PyQt5 import uic
 from PyQt5.QtGui import QRegularExpressionValidator
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout
-from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression
+from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression, QModelIndex
 from attr import attrs, attrib
 
 from domain import Domain, Params
+from markermodel import MarkerModel
 from measuremodel import MeasureModel
 from mytools.plotwidget import PlotWidget
 from formlayout.formlayout import fedit
@@ -34,6 +35,7 @@ class MainWindow(QMainWindow):
         self._domain = Domain(parent=self)
 
         self._measureModel = MeasureModel(parent=self, domain=self._domain)
+        self._markerModel = MarkerModel(parent=self)
 
         self._plotWidget = PlotWidget(parent=self, toolbar=True)
         self._ui.layoutPlot = QVBoxLayout()
@@ -46,6 +48,7 @@ class MainWindow(QMainWindow):
         self._setupUi()
 
         self._ui.tableMeasure.setModel(self._measureModel)
+        self._ui.tableMarker.setModel(self._markerModel)
 
         self._modeBeforeConnect()
         self.refreshView()
@@ -62,6 +65,7 @@ class MainWindow(QMainWindow):
 
     def _setupSignals(self):
         self._domain.measureFinished.connect(self.on_measurementFinished)
+        self._markerModel.dataChanged.connect(self.on_markerChanged)
 
     # UI utility methods
     def refreshView(self):
@@ -70,6 +74,9 @@ class MainWindow(QMainWindow):
     def resizeTable(self):
         self._ui.tableMeasure.resizeRowsToContents()
         self._ui.tableMeasure.resizeColumnsToContents()
+
+        self._ui.tableMarker.resizeRowsToContents()
+        self._ui.tableMarker.resizeColumnsToContents()
 
     def _modeBeforeConnect(self):
         self._ui.btnCheckSample.setEnabled(False)
@@ -207,6 +214,29 @@ class MainWindow(QMainWindow):
     def on_editAnalyzerAddr_textChanged(self, text):
         self._domain.analyzerAddress = text
 
+    @pyqtSlot()
+    def on_btnAddMarker_clicked(self):
+        try:
+            self._markerModel.addMarker()
+
+            self.on_measurementFinished()
+        except Exception as ex:
+            print(ex)
+
+    @pyqtSlot()
+    def on_btnDelMarker_clicked(self):
+        if not self._ui.tableMarker.selectionModel().hasSelection():
+            return
+
+        targetRow = self._ui.tableMarker.selectionModel().selectedIndexes()[0].row()
+
+        try:
+            self._markerModel.delMarker(targetRow)
+
+            self.on_measurementFinished()
+        except Exception as ex:
+            print(ex)
+
     # action triggers
     @pyqtSlot()
     def on_actSettings_triggered(self):
@@ -218,6 +248,13 @@ class MainWindow(QMainWindow):
             return
 
         self._domain.applySettings(Settings.from_values(values))
+
+    # model signals
+    def on_markerChanged(self, first, last, roles):
+        if not self._domain.xs:
+            return
+
+        self.on_measurementFinished()
 
     # measurement event handlers
     @pyqtSlot()
@@ -231,13 +268,22 @@ class MainWindow(QMainWindow):
             plot.set_ylabel('дБц/Гц')
             # plot.set_xlim(pars['xlim'][0], pars['xlim'][1])
             # plot.set_ylim(pars['ylim'][0], pars['ylim'][1])
-            plot.grid(b=True, which='major', color='0.5', linestyle='-')
+            plot.grid(b=True, which='major', color='0.5', linestyle='--')
 
-        print('on meas finish')
+        def add_markers(plot):
+            for marker in self._markerModel.markers:
+                plot.axvline(marker, 0, 1, linewidth=0.8, color='0.3', linestyle='-')
+
         self._measureModel.init()
         self._plotWidget.clear()
         setup_plot(self._plotWidget)
         self._plotWidget.plot(self._domain.xs, self._domain.ys)
+        add_markers(self._plotWidget)
+
+        self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
+
+        self.refreshView()
+
         self._modeBeforeContinue()
 
     # helpers
