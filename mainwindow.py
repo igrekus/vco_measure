@@ -86,7 +86,6 @@ class MainWindow(QMainWindow):
         self._ui.btnContinue.hide()
         self._ui.spinF1.setEnabled(False)
         self._ui.spinF2.setEnabled(False)
-        self._ui.spinDF.setEnabled(False)
         self._ui.spinV1.setEnabled(False)
         self._ui.spinV2.setEnabled(False)
         self._ui.spinVdut.setEnabled(False)
@@ -102,7 +101,6 @@ class MainWindow(QMainWindow):
         self._ui.btnContinue.hide()
         self._ui.spinF1.setEnabled(True)
         self._ui.spinF2.setEnabled(True)
-        self._ui.spinDF.setEnabled(True)
         self._ui.spinV1.setEnabled(self._ui.checkV1.isChecked())
         self._ui.spinV2.setEnabled(self._ui.checkV2.isChecked())
         self._ui.spinVdut.setEnabled(self._ui.checkVdut.isChecked())
@@ -118,7 +116,6 @@ class MainWindow(QMainWindow):
         self._ui.btnContinue.hide()
         self._ui.spinF1.setEnabled(True)
         self._ui.spinF2.setEnabled(True)
-        self._ui.spinDF.setEnabled(True)
         self._ui.spinV1.setEnabled(self._ui.checkV1.isChecked())
         self._ui.spinV2.setEnabled(self._ui.checkV2.isChecked())
         self._ui.spinVdut.setEnabled(self._ui.checkVdut.isChecked())
@@ -134,7 +131,6 @@ class MainWindow(QMainWindow):
         self._ui.btnContinue.hide()
         self._ui.spinF1.setEnabled(False)
         self._ui.spinF2.setEnabled(False)
-        self._ui.spinDF.setEnabled(False)
         self._ui.spinV1.setEnabled(False)
         self._ui.spinV2.setEnabled(False)
         self._ui.spinVdut.setEnabled(False)
@@ -150,7 +146,6 @@ class MainWindow(QMainWindow):
         self._ui.btnContinue.show()
         self._ui.spinF1.setEnabled(False)
         self._ui.spinF2.setEnabled(False)
-        self._ui.spinDF.setEnabled(False)
         self._ui.spinV1.setEnabled(False)
         self._ui.spinV2.setEnabled(False)
         self._ui.spinVdut.setEnabled(False)
@@ -162,7 +157,6 @@ class MainWindow(QMainWindow):
         return Params(
             f1=self._ui.spinF1.value(),
             f2=self._ui.spinF2.value(),
-            df=self._ui.spinDF.value(),
             v1=self._ui.spinV1.value(),
             v2=self._ui.spinV2.value(),
             vc=self._ui.spinVdut.value(),
