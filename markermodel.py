@@ -91,6 +91,11 @@ class MarkerModel(QAbstractTableModel):
         self._markerIndex += 1
         self.endResetModel()
 
+    def delMarker(self, row: int):
+        self.beginResetModel()
+        del self._data[row]
+        self.endResetModel()
+
     @property
     def markers(self):
         return [d[1] for d in self._data]

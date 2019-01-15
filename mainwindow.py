@@ -225,7 +225,17 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_btnDelMarker_clicked(self):
-        print('del')
+        if not self._ui.tableMarker.selectionModel().hasSelection():
+            return
+
+        targetRow = self._ui.tableMarker.selectionModel().selectedIndexes()[0].row()
+
+        try:
+            self._markerModel.delMarker(targetRow)
+
+            self.on_measurementFinished()
+        except Exception as ex:
+            print(ex)
 
     # action triggers
     @pyqtSlot()
