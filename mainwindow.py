@@ -245,11 +245,11 @@ class MainWindow(QMainWindow):
     # action triggers
     @pyqtSlot()
     def on_actSettings_triggered(self):
-        data = [
+        data = (
             ('Параметр шума', self._domain._offset),
             ('Параметр частоты', self._domain._freqOffset),
             ('Параметр мощности', self._domain._ampOffset)
-        ]
+        )
         # TODO сменить единицу измерения частоты отстройки
         values = fedit(data=data, title='Настройки')
         if not values:
