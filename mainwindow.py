@@ -1,13 +1,12 @@
 from PyQt5 import uic
 from PyQt5.QtGui import QRegularExpressionValidator
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout
-from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression, QModelIndex
+from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression
 from attr import attrs, attrib
 
 from domain import Domain, Params
 from markermodel import MarkerModel
 from measuremodel import MeasureModel
-from mytools.plotwidget import PlotWidget
 from formlayout.formlayout import fedit
 from phaseplotwidget import PhasePlotWidget
 
