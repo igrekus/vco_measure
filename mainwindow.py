@@ -9,6 +9,7 @@ from markermodel import MarkerModel
 from measuremodel import MeasureModel
 from mytools.plotwidget import PlotWidget
 from formlayout.formlayout import fedit
+from phaseplotwidget import PhasePlotWidget
 
 
 @attrs
@@ -37,8 +38,9 @@ class MainWindow(QMainWindow):
         self._measureModel = MeasureModel(parent=self, domain=self._domain)
         self._markerModel = MarkerModel(parent=self)
 
-        self._plotWidget = PlotWidget(parent=self, toolbar=True)
+        self._plotWidget = PhasePlotWidget(parent=self, domain=self._domain)
         self._ui.layoutPlot = QVBoxLayout()
+        self._ui.layoutPlot.addWidget(self._ui.widgetStats)
         self._ui.layoutPlot.addWidget(self._plotWidget)
         self._ui.tabPlot.setLayout(self._ui.layoutPlot)
 
@@ -245,7 +247,9 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_actSettings_triggered(self):
         data = [
-            ('Параметр', self._domain._offset)
+            ('Параметр шума', self._domain._offset),
+            ('Параметр частоты', self._domain._freqOffset),
+            ('Параметр мощности', self._domain._ampOffset)
         ]
         # TODO сменить единицу измерения частоты отстройки
         values = fedit(data=data, title='Настройки')
@@ -264,31 +268,18 @@ class MainWindow(QMainWindow):
     # measurement event handlers
     @pyqtSlot()
     def on_measurementFinished(self):
-
-        def setup_plot(plot):
-            plot.subplots_adjust(bottom=0.150)
-            plot.set_title('Фазовый шум')
-            plot.set_xlabel('Частота, Гц')
-            plot.set_xscale('log')
-            plot.set_ylabel('дБн/Гц')
-            # plot.set_xlim(pars['xlim'][0], pars['xlim'][1])
-            # plot.set_ylim(pars['ylim'][0], pars['ylim'][1])
-            plot.grid(b=True, which='major', color='0.5', linestyle='--')
-
-        def add_markers(plot):
-            for marker in self._markerModel.markers:
-                plot.axvline(marker, 0, 1, linewidth=0.8, color='0.3', linestyle='-')
-
         self._measureModel.init()
-        self._plotWidget.clear()
-        setup_plot(self._plotWidget)
-        self._plotWidget.plot(self._domain.xs, self._domain.ys)
-        add_markers(self._plotWidget)
+
+        self._plotWidget.plot()
+        self._plotWidget.addMarkers(self._markerModel.markers)
 
         self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
 
-        self.refreshView()
+        self._ui.editFreq.setText(self._domain._freq)
+        self._ui.editAmp.setText(self._domain._amp)
+        self._ui.editCur.setText(self._domain._cur)
 
+        self.refreshView()
         self._modeBeforeContinue()
 
     # helpers
