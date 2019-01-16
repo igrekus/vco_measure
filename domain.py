@@ -8,7 +8,6 @@ from instrumentcontroller import InstrumentController
 class Params:
     f1 = attrib(type=float, default=0.0)
     f2 = attrib(type=float, default=100.0)
-    df = attrib(type=float, default=10.0)
     v1 = attrib(type=float, default=4.70)
     v2 = attrib(type=float, default=0.0)
     vc = attrib(type=float, default=0.0)
@@ -43,9 +42,15 @@ class Domain(QObject):
         self._threadPool = QThreadPool()
 
         self._offset = 0.0
+        self._freqOffset = 0.0
+        self._ampOffset = 0.0
 
         self._freqs = list()
         self._amps = list()
+
+        self._freq = 0.0
+        self._amp = 0.0
+        self._cur = 0.0
 
     def _clear(self):
         self._freqs.clear()
@@ -69,7 +74,7 @@ class Domain(QObject):
 
     def _measureFunc(self, params: Params):
         print(f'start measurement task')
-        self._freqs, self._amps = self._instruments.measure(params)
+        self._freqs, self._amps, self._freq, self._amp, self._cur = self._instruments.measure(params)
         print('end measurement task')
 
     def _processingFunc(self):
