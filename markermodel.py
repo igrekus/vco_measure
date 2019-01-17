@@ -100,3 +100,6 @@ class MarkerModel(QAbstractTableModel):
     def markers(self):
         return [d[1] for d in self._data]
 
+    @property
+    def stats(self):
+        return [f'{d[0]}: {d[1]/1_000}кГц - {d[2]} дБм' for d in self._data]

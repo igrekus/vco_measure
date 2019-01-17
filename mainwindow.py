@@ -275,6 +275,10 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_measurementFinished(self):
         self._measureModel.init()
+        self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
+
+        stats = self._markerModel.stats
+        print(stats)
 
         self._plotWidget._title = f'Частота: {round(self._domain._freq / 1_000_000, 2)} МГц, ' \
                                   f'мощность: {round(self._domain._amp, 2)} дБм, ' \
@@ -282,8 +286,6 @@ class MainWindow(QMainWindow):
 
         self._plotWidget.plot()
         self._plotWidget.addMarkers(self._markerModel.markers)
-
-        self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
 
         self.refreshView()
         self._modeBeforeContinue()
