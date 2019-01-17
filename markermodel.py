@@ -102,4 +102,4 @@ class MarkerModel(QAbstractTableModel):
 
     @property
     def stats(self):
-        return [f'{d[0]}: {round(d[1]/1_000, 1)} кГц - {round(d[2], 2)} дБм' for d in self._data]
+        return [f'{d[0]}: {round(d[1]/1_000, 1)} кГц = {round(d[2], 2)} дБм' for d in self._data]
