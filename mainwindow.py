@@ -14,10 +14,13 @@ from phaseplotwidget import PhasePlotWidget
 @attrs
 class Settings:
     offset = attrib(type=float, default=0.0)
+    freqOffset = attrib(type=float, default=0.0)
+    ampOffset = attrib(type=float, default=0.0)
+    curOffset = attrib(type=float, default=0.0)
 
     @classmethod
     def from_values(cls, data):
-        return cls(offset=data[0])
+        return cls(offset=float(data[0]), freqOffset=float(data[1]) * 1_000_000, ampOffset=float(data[2]), curOffset=float(data[3]) / 1_000)
 
 
 class MainWindow(QMainWindow):
@@ -247,8 +250,9 @@ class MainWindow(QMainWindow):
     def on_actSettings_triggered(self):
         data = (
             ('Параметр шума', self._domain._offset),
-            ('Параметр частоты', self._domain._freqOffset),
-            ('Параметр мощности', self._domain._ampOffset)
+            ('Параметр частоты', self._domain._freqOffset / 1_000_000),
+            ('Параметр мощности', self._domain._ampOffset),
+            ('Параметр тока', self._domain._curOffset * 1000)
         )
         # TODO сменить единицу измерения частоты отстройки
         values = fedit(data=data, title='Настройки')
@@ -274,9 +278,12 @@ class MainWindow(QMainWindow):
 
         self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
 
-        self._ui.editFreq.setText(self._domain._freq)
-        self._ui.editAmp.setText(self._domain._amp)
-        self._ui.editCur.setText(self._domain._cur)
+        try:
+            self._ui.editFreq.setText(f'{round(self._domain._freq / 1_000_000, 2)} МГц')
+            self._ui.editAmp.setText(f'{round(self._domain._amp, 2)} дБм')
+            self._ui.editCur.setText(f'{round(self._domain._cur * 1_000, 2)} мА')
+        except Exception as ex:
+            print(ex)
 
         self.refreshView()
         self._modeBeforeContinue()

@@ -44,6 +44,7 @@ class Domain(QObject):
         self._offset = 0.0
         self._freqOffset = 0.0
         self._ampOffset = 0.0
+        self._curOffset = 0.0
 
         self._freqs = list()
         self._amps = list()
@@ -58,6 +59,9 @@ class Domain(QObject):
 
     def applySettings(self, settings):
         self._offset = settings.offset
+        self._freqOffset = settings.freqOffset
+        self._ampOffset = settings.ampOffset
+        self._curOffset = settings.curOffset
 
     def connect(self):
         print('find instruments')
@@ -80,6 +84,11 @@ class Domain(QObject):
     def _processingFunc(self):
         print('processing stats')
         self._amps = list(map(lambda x: x + self._offset, self._amps))
+
+        self._amp = float(self._amp) + self._ampOffset
+        self._freq = float(self._freq) + self._freqOffset
+        self._cur = float(self._cur) + self._curOffset
+
         self.measureFinished.emit()
 
     def rows(self):
