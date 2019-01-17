@@ -74,6 +74,7 @@ class MainWindow(QMainWindow):
     # UI utility methods
     def refreshView(self):
         self.resizeTable()
+        self._plotWidget.tightLayout()
 
     def resizeTable(self):
         self._ui.tableMeasure.resizeRowsToContents()

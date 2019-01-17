@@ -16,12 +16,14 @@ class PhasePlotWidget(QWidget):
 
         self.setLayout(self._layout)
 
+        self._title = ''
+
         self._init()
 
     def _init(self):
-        self._plot.set_title('Фазовый шум')
+        self._plot.set_title(self._title)
         self._plot.set_xlabel('Частота, Гц')
-        self._plot.set_ylabel('дБн/Гц')
+        self._plot.set_ylabel('Фазовый шум, дБн/Гц')
         self._plot.set_xscale('log')
         # self._plot.set_xlim(pars['xlim'][0], pars['xlim'][1])
         # self._plot.set_ylim(pars['ylim'][0], pars['ylim'][1])
@@ -39,6 +41,8 @@ class PhasePlotWidget(QWidget):
         for marker in markers:
             self._plot.axvline(marker, 0, 1, linewidth=0.8, color='0.3', linestyle='-')
 
+    def tightLayout(self):
+        self._plot.tight_layout()
     # def save(self, img_path='./image'):
     #     try:
     #         os.makedirs(img_path)
