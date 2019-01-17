@@ -14,10 +14,13 @@ from phaseplotwidget import PhasePlotWidget
 @attrs
 class Settings:
     offset = attrib(type=float, default=0.0)
+    freqOffset = attrib(type=float, default=0.0)
+    ampOffset = attrib(type=float, default=0.0)
+    curOffset = attrib(type=float, default=0.0)
 
     @classmethod
     def from_values(cls, data):
-        return cls(offset=data[0])
+        return cls(offset=float(data[0]), freqOffset=float(data[1]) * 1_000_000, ampOffset=float(data[2]), curOffset=float(data[3]) / 1_000)
 
 
 class MainWindow(QMainWindow):
@@ -61,6 +64,8 @@ class MainWindow(QMainWindow):
             '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.'
             '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')))
 
+        self._ui.widgetStats.hide()
+
         self._setupSignals()
         self._modeBeforeConnect()
 
@@ -71,6 +76,7 @@ class MainWindow(QMainWindow):
     # UI utility methods
     def refreshView(self):
         self.resizeTable()
+        self._plotWidget.tightLayout()
 
     def resizeTable(self):
         self._ui.tableMeasure.resizeRowsToContents()
@@ -247,8 +253,9 @@ class MainWindow(QMainWindow):
     def on_actSettings_triggered(self):
         data = (
             ('Параметр шума', self._domain._offset),
-            ('Параметр частоты', self._domain._freqOffset),
-            ('Параметр мощности', self._domain._ampOffset)
+            ('Параметр частоты', self._domain._freqOffset / 1_000_000),
+            ('Параметр мощности', self._domain._ampOffset),
+            ('Параметр тока', self._domain._curOffset * 1000)
         )
         # TODO сменить единицу измерения частоты отстройки
         values = fedit(data=data, title='Настройки')
@@ -268,15 +275,16 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_measurementFinished(self):
         self._measureModel.init()
+        self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
+
+        self._plotWidget._title = f'Частота: {round(self._domain._freq / 1_000_000, 2)} МГц, ' \
+                                  f'мощность: {round(self._domain._amp, 2)} дБм, ' \
+                                  f'ток потребления: {round(self._domain._cur * 1_000, 2)} мА'
+
+        self._plotWidget._stats = self._markerModel.stats
 
         self._plotWidget.plot()
         self._plotWidget.addMarkers(self._markerModel.markers)
-
-        self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
-
-        self._ui.editFreq.setText(self._domain._freq)
-        self._ui.editAmp.setText(self._domain._amp)
-        self._ui.editCur.setText(self._domain._cur)
 
         self.refreshView()
         self._modeBeforeContinue()

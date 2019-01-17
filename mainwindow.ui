@@ -481,7 +481,7 @@
          <item>
           <widget class="QLabel" name="lblFreq">
            <property name="text">
-            <string>F=</string>
+            <string>&lt;b&gt;Частота:&lt;/b&gt;</string>
            </property>
           </widget>
          </item>
@@ -501,7 +501,7 @@
          <item>
           <widget class="QLabel" name="lblAmp">
            <property name="text">
-            <string>Pow=</string>
+            <string>&lt;b&gt;Мощность:&lt;/b&gt;</string>
            </property>
           </widget>
          </item>
@@ -519,9 +519,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_3">
+          <widget class="QLabel" name="lblCur">
            <property name="text">
-            <string>I=</string>
+            <string>&lt;b&gt;Ток потребления:&lt;/b&gt;</string>
            </property>
           </widget>
          </item>
