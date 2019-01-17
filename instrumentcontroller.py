@@ -52,7 +52,7 @@ class InstrumentController:
         self._analyzer.source_supply_voltage(supply=1, volt=params.v1)
         self._analyzer.source_supply_status(supply=1, status='ON' if params.v1 != 0 else 'OFF')
         self._analyzer.source_supply_voltage(supply=2, volt=params.v2)
-        self._analyzer.source_supply_status(supply=2, status='ON' if params.v2 != 0.0 else 'OFF')
+        self._analyzer.source_supply_status(supply=2, status='ON' if params.v2 != 0 else 'OFF')
 
         self._analyzer.source_tune_dut_voltage(volt=params.vc)
         self._analyzer.source_tune_dut_status(status='ON' if params.vc != 0 else 'OFF')
