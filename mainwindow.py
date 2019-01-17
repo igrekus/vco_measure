@@ -64,6 +64,8 @@ class MainWindow(QMainWindow):
             '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.'
             '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')))
 
+        self._ui.widgetStats.hide()
+
         self._setupSignals()
         self._modeBeforeConnect()
 
@@ -274,14 +276,14 @@ class MainWindow(QMainWindow):
     def on_measurementFinished(self):
         self._measureModel.init()
 
+        self._plotWidget._title = f'Частота: {round(self._domain._freq / 1_000_000, 2)} МГц, ' \
+                                  f'мощность: {round(self._domain._amp, 2)} дБм, ' \
+                                  f'ток потребления: {round(self._domain._cur * 1_000, 2)} мА'
+
         self._plotWidget.plot()
         self._plotWidget.addMarkers(self._markerModel.markers)
 
         self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
-
-        self._ui.editFreq.setText(f'{round(self._domain._freq / 1_000_000, 2)} МГц')
-        self._ui.editAmp.setText(f'{round(self._domain._amp, 2)} дБм')
-        self._ui.editCur.setText(f'{round(self._domain._cur * 1_000, 2)} мА')
 
         self.refreshView()
         self._modeBeforeContinue()
