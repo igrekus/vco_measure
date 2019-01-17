@@ -279,12 +279,9 @@ class MainWindow(QMainWindow):
 
         self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
 
-        try:
-            self._ui.editFreq.setText(f'{round(self._domain._freq / 1_000_000, 2)} МГц')
-            self._ui.editAmp.setText(f'{round(self._domain._amp, 2)} дБм')
-            self._ui.editCur.setText(f'{round(self._domain._cur * 1_000, 2)} мА')
-        except Exception as ex:
-            print(ex)
+        self._ui.editFreq.setText(f'{round(self._domain._freq / 1_000_000, 2)} МГц')
+        self._ui.editAmp.setText(f'{round(self._domain._amp, 2)} дБм')
+        self._ui.editCur.setText(f'{round(self._domain._cur * 1_000, 2)} мА')
 
         self.refreshView()
         self._modeBeforeContinue()
