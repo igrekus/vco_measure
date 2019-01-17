@@ -1,4 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from matplotlib.lines import Line2D
+
 from mytools.plotwidget import PlotWidget
 
 
@@ -17,6 +19,7 @@ class PhasePlotWidget(QWidget):
         self.setLayout(self._layout)
 
         self._title = ''
+        self._stats = list()
 
         self._init()
 
@@ -33,8 +36,10 @@ class PhasePlotWidget(QWidget):
         self._plot.clear()
 
     def plot(self):
+        legend = [Line2D([0], [0], color='0.2', linestyle='-', label=lbl) for lbl in self._stats]
         self._plot.clear()
         self._init()
+        self._plot.legend(handles=legend)
         self._plot.plot(self._domain.xs, self._domain.ys)
 
     def addMarkers(self, markers):
@@ -43,6 +48,7 @@ class PhasePlotWidget(QWidget):
 
     def tightLayout(self):
         self._plot.tight_layout()
+
     # def save(self, img_path='./image'):
     #     try:
     #         os.makedirs(img_path)
