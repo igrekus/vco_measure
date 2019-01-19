@@ -26,7 +26,7 @@ class PhasePlotWidget(QWidget):
     def _init(self):
         self._plot.set_title(self._title)
         self._plot.set_xlabel('Частота, Гц')
-        self._plot.set_ylabel('Фазовый шум, дБн/Гц')
+        self._plot.set_ylabel('Фазовый шум, дБц/Гц')
         self._plot.set_xscale('log')
         # self._plot.set_xlim(pars['xlim'][0], pars['xlim'][1])
         # self._plot.set_ylim(pars['ylim'][0], pars['ylim'][1])
