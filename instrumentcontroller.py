@@ -92,10 +92,12 @@ class InstrumentController:
         amps = self._analyzer.calc_trace_noise(mode='FN')
         # imag = self._analyzer.query('CALC:FN:TRAC:IMAG?')
 
-        self._analyzer.send('sens:freq:exec')
-        cur = self._analyzer.query('MEAS:SUPP1:CURR?')
-        amp = self._analyzer.query('CALC:POW?')
-        freq = self._analyzer.query('CALC:FREQ?')
+        self._analyzer.sense_freq_exec()
+        cur = self._analyzer.measure_supply_current(supply=1)
+        amp = self._analyzer.calc_pow()
+        freq = self._analyzer.calc_freq()
+
+        self._analyzer.system_error_all()
 
         return freqs, amps, freq, amp, cur
 
