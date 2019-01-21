@@ -90,7 +90,6 @@ class InstrumentController:
 
         freqs = self._analyzer.calc_trace_freq(mode='FN')
         amps = self._analyzer.calc_trace_noise(mode='FN')
-        # imag = self._analyzer.query('CALC:FN:TRAC:IMAG?')
 
         self._analyzer.sense_freq_exec()
         cur = self._analyzer.measure_supply_current(supply=1)
