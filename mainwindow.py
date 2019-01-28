@@ -277,9 +277,10 @@ class MainWindow(QMainWindow):
         self._measureModel.init()
         self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
 
-        self._plotWidget._title = f'Частота: {round(self._domain._freq / 1_000_000, 2)} МГц, ' \
-                                  f'мощность: {round(self._domain._amp, 2)} дБц, ' \
-                                  f'ток потребления: {round(self._domain._cur * 1_000, 2)} мА'
+        self._plotWidget._title = ""
+        # self._plotWidget._title = f'Частота: {round(self._domain._freq / 1_000_000, 2)} МГц, ' \
+        #                          f'мощность: {round(self._domain._amp, 2)} дБц, ' \
+        #                          f'ток потребления: {round(self._domain._cur * 1_000, 2)} мА'
 
         self._plotWidget._stats = self._markerModel.stats
 
