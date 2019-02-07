@@ -22,7 +22,7 @@ class InstrumentController:
         from instr.pna20 import Pna20
 
         if self._ip:
-            print(f'trying {self._ip}')
+            print(f'trying {self.analyzer_address}')
             try:
                 self._analyzer = Pna20.from_address_string(self.analyzer_address)
                 return
@@ -60,11 +60,18 @@ class InstrumentController:
         self._analyzer.sense_adc_rosc_source(source='INT')
         self._analyzer.sense_mode(mode='FN')
 
-        # self._analyzer.send('sens:pn:freq 600k --- how to detect?')
+        self._analyzer.sense_freq_exec()
+        cur = self._analyzer.measure_supply_current(supply=1)
+        amp = self._analyzer.calc_pow()
+        freq = self._analyzer.calc_freq()
+
+        self._analyzer.send(f'SENS:FN:FREQ {int(freq)}')
 
         self._analyzer.sense_freq_start(mode='FN', freq=int(params.f1))
         self._analyzer.sense_freq_stop(mode='FN', freq=int(params.f2))
-        self._analyzer.sense_freq_det(mode='FN', value='NEV')
+        self._analyzer.sense_freq_det(mode='FN', value='NEV')   # NEV / ALW
+
+        self._analyzer.send(f'SENS:FN:FREQ:AUTO ON')
 
         print('*OPC?:', self._analyzer.operation_complete)
 
@@ -90,11 +97,6 @@ class InstrumentController:
 
         freqs = self._analyzer.calc_trace_freq(mode='FN')
         amps = self._analyzer.calc_trace_noise(mode='FN')
-
-        self._analyzer.sense_freq_exec()
-        cur = self._analyzer.measure_supply_current(supply=1)
-        amp = self._analyzer.calc_pow()
-        freq = self._analyzer.calc_freq()
 
         self._analyzer.system_error_all()
 
