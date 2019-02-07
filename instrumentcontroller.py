@@ -22,7 +22,7 @@ class InstrumentController:
         from instr.pna20 import Pna20
 
         if self._ip:
-            print(f'trying {self._ip}')
+            print(f'trying {self.analyzer_address}')
             try:
                 self._analyzer = Pna20.from_address_string(self.analyzer_address)
                 return
