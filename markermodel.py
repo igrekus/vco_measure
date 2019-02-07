@@ -10,7 +10,7 @@ class MarkerModel(QAbstractTableModel):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self._headers = ['#', 'Частота', 'дБц/Гц']
+        self._headers = ['#', 'Частота', 'дБн/Гц']
 
         self._markerIndex = 4
 
@@ -102,4 +102,4 @@ class MarkerModel(QAbstractTableModel):
 
     @property
     def stats(self):
-        return [f'{d[0]}: {round(d[1]/1_000, 1)} кГц = {round(d[2], 2)} дБц/Гц' for d in self._data]
+        return [f'{d[0]}: {round(d[1]/1_000, 1)} кГц = {round(d[2], 2)} дБн/Гц' for d in self._data]
