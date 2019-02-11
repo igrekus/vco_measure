@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from matplotlib.lines import Line2D
+from scipy.signal import savgol_filter
 
 from mytools.plotwidget import PlotWidget
 
@@ -41,6 +42,12 @@ class PhasePlotWidget(QWidget):
         self._init()
         self._plot.legend(handles=legend)
         self._plot.plot(self._domain.xs, self._domain.ys)
+        self.plot_smooth_data()
+
+    def plot_smooth_data(self):
+        avg_ys = savgol_filter(self._domain.ys, 31, 3)
+        self._plot.plot(self._domain.xs, avg_ys)
+        # TODO calc markers from averaged curve
 
     def addMarkers(self, markers):
         for marker in markers:
