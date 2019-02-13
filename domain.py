@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QObject, QRunnable, QThreadPool, pyqtSignal
 from attr import attrs, attrib
+from scipy.signal import savgol_filter
 
 from instrumentcontroller import InstrumentController
 
@@ -126,4 +127,7 @@ class Domain(QObject):
     def ys(self):
         return self._amps
 
+    @property
+    def smoothYs(self):
+        return savgol_filter(self._amps, 31, 3)
 
