@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QObject, QRunnable, QThreadPool, pyqtSignal
 from attr import attrs, attrib
+from scipy.signal import savgol_filter
 
 from instrumentcontroller import InstrumentController
 
@@ -48,6 +49,7 @@ class Domain(QObject):
 
         self._freqs = list()
         self._amps = list()
+        self._smoothAmps = list()
 
         self._freq = 0.0
         self._amp = 0.0
@@ -84,6 +86,7 @@ class Domain(QObject):
     def _processingFunc(self):
         print('processing stats')
         self._amps = list(map(lambda x: x + self._offset, self._amps))
+        self._smoothAmps = savgol_filter(self._amps, 31, 3)
 
         self._amp = float(self._amp) + self._ampOffset
         self._freq = float(self._freq) + self._freqOffset
@@ -104,7 +107,7 @@ class Domain(QObject):
             return self._amps[row]
 
     def ampsForMarkers(self, markers):
-        return [self._amps[self._freqs.index(min(self._freqs, key=lambda x: abs(freq - x)))] for freq in markers]
+        return [self._smoothAmps[self._freqs.index(min(self._freqs, key=lambda x: abs(freq - x)))] for freq in markers]
 
     @property
     def analyzerAddress(self):
@@ -126,4 +129,7 @@ class Domain(QObject):
     def ys(self):
         return self._amps
 
+    @property
+    def smoothYs(self):
+        return self._smoothAmps
 

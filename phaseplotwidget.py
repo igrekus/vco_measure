@@ -41,6 +41,7 @@ class PhasePlotWidget(QWidget):
         self._init()
         self._plot.legend(handles=legend)
         self._plot.plot(self._domain.xs, self._domain.ys)
+        self._plot.plot(self._domain.xs, self._domain.smoothYs)
 
     def addMarkers(self, markers):
         for marker in markers:
