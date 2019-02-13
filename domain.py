@@ -49,6 +49,7 @@ class Domain(QObject):
 
         self._freqs = list()
         self._amps = list()
+        self._smoothAmps = list()
 
         self._freq = 0.0
         self._amp = 0.0
@@ -85,6 +86,7 @@ class Domain(QObject):
     def _processingFunc(self):
         print('processing stats')
         self._amps = list(map(lambda x: x + self._offset, self._amps))
+        self._smoothAmps = savgol_filter(self._amps, 31, 3)
 
         self._amp = float(self._amp) + self._ampOffset
         self._freq = float(self._freq) + self._freqOffset
@@ -129,5 +131,5 @@ class Domain(QObject):
 
     @property
     def smoothYs(self):
-        return savgol_filter(self._amps, 31, 3)
+        return self._smoothAmps
 
