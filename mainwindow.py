@@ -46,6 +46,9 @@ class MainWindow(QMainWindow):
         self._ui.layoutPlot.addWidget(self._plotWidget)
         self._ui.tabPlot.setLayout(self._ui.layoutPlot)
 
+        # UI hack
+        self._show_stats = False
+
         self._init()
 
     def _init(self):
@@ -64,7 +67,7 @@ class MainWindow(QMainWindow):
             '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.'
             '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')))
 
-        self._ui.widgetStats.hide()
+        self._ui.widgetStats.setVisible(self._show_stats)
 
         self._setupSignals()
         self._modeBeforeConnect()
@@ -255,7 +258,8 @@ class MainWindow(QMainWindow):
             ('Параметр шума', self._domain._offset),
             ('Параметр частоты', self._domain._freqOffset / 1_000_000),
             ('Параметр мощности', self._domain._ampOffset),
-            ('Параметр тока', self._domain._curOffset * 1000)
+            ('Параметр тока', self._domain._curOffset * 1000),
+            ('Показывать частоту', self._show_stats)
         )
         # TODO сменить единицу измерения частоты отстройки
         values = fedit(data=data, title='Настройки')
@@ -263,6 +267,9 @@ class MainWindow(QMainWindow):
             return
 
         self._domain.applySettings(Settings.from_values(values))
+
+        self._show_stats = values[4]
+        self._ui.widgetStats.setVisible(self._show_stats)
 
     # model signals
     def on_markerChanged(self, first, last, roles):
