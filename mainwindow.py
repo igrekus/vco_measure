@@ -78,6 +78,7 @@ class MainWindow(QMainWindow):
 
     # UI utility methods
     def refreshView(self):
+        # TODO debounce resize event
         self.resizeTable()
         self._plotWidget.tightLayout()
 
