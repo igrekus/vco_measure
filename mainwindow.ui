@@ -596,11 +596,6 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabVCOCharacterization">
-       <attribute name="title">
-        <string>Характеристика ГУН</string>
-       </attribute>
-      </widget>
      </widget>
     </item>
    </layout>

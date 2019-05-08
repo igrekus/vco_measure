@@ -9,6 +9,7 @@ from markermodel import MarkerModel
 from measuremodel import MeasureModel
 from formlayout.formlayout import fedit
 from phaseplotwidget import PhasePlotWidget
+from vcocharwidget import VCOCharWidget
 
 
 @attrs
@@ -36,6 +37,9 @@ class MainWindow(QMainWindow):
 
         # create models
         self._domain = Domain(parent=self)
+
+        self._vcoCharWidget = VCOCharWidget(parent=self)
+        self._ui.tabWidgetMain.addTab(self._vcoCharWidget, 'Характеристика ГУН')
 
         self._measureModel = MeasureModel(parent=self, domain=self._domain)
         self._markerModel = MarkerModel(parent=self)
@@ -90,6 +94,7 @@ class MainWindow(QMainWindow):
         self._ui.tableMarker.resizeColumnsToContents()
 
     def _modeBeforeConnect(self):
+        self._vcoCharWidget.ready = False
         self._ui.btnCheckSample.setEnabled(False)
         self._ui.btnStartMeasure.setEnabled(False)
         self._ui.btnContinue.setEnabled(False)
@@ -107,6 +112,7 @@ class MainWindow(QMainWindow):
         self._ui.checkVdut.setEnabled(False)
 
     def _modeBeforeCheckSample(self):
+        self._vcoCharWidget.ready = True
         self._ui.btnCheckSample.setEnabled(True)
         self._ui.btnStartMeasure.setEnabled(False)
         self._ui.btnContinue.setEnabled(False)
