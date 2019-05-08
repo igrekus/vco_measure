@@ -1,6 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtChart import QChartView, QLineSeries
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QWidget
 
@@ -57,6 +57,9 @@ class CharPlotWidget(QChartView):
 
 class VCOCharWidget(QWidget):
 
+    startMeasure = pyqtSignal()
+    exportResult = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
@@ -94,11 +97,11 @@ class VCOCharWidget(QWidget):
     # event handlers
     @pyqtSlot()
     def on_btnMeasure_clicked(self):
-        print('measure')
+        self.startMeasure.emit()
 
     @pyqtSlot()
     def on_btnExport_clicked(self):
-        print('export')
+        self.exportResult.emit()
 
     @pyqtSlot(bool)
     def on_checkV1_toggled(self, value):

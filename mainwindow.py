@@ -80,6 +80,9 @@ class MainWindow(QMainWindow):
         self._domain.measureFinished.connect(self.on_measurementFinished)
         self._markerModel.dataChanged.connect(self.on_markerChanged)
 
+        self._vcoCharWidget.startMeasure.connect(self.on_vcoCharWidget_startMeasure)
+        self._vcoCharWidget.exportResult.connect(self.on_vcoCharWidget_exportResult)
+
     # UI utility methods
     def refreshView(self):
         # TODO debounce resize event
@@ -284,6 +287,12 @@ class MainWindow(QMainWindow):
             return
 
         self.on_measurementFinished()
+
+    def on_vcoCharWidget_startMeasure(self):
+        print('vco start measure')
+
+    def on_vcoCharWidget_exportResult(self):
+        print('vco export result')
 
     # measurement event handlers
     @pyqtSlot()
