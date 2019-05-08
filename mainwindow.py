@@ -317,7 +317,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_vcoCharMeasurementFinished(self):
-        print(f'plotting results {self._domain._vcoCharMeasurement.result}')
+        self._vcoCharWidget.plotResult(self._domain._vcoCharMeasurement.result)
 
     # helpers
     def _failWith(self, message):

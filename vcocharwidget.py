@@ -1,7 +1,7 @@
 from PyQt5 import uic
-from PyQt5.QtChart import QChartView, QLineSeries
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
-from PyQt5.QtGui import QPainter
+from PyQt5.QtChart import QChartView, QLineSeries, QValueAxis
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QPointF, Qt
+from PyQt5.QtGui import QPainter, QFont
 from PyQt5.QtWidgets import QWidget
 
 from attr import attrs, attrib
@@ -30,17 +30,38 @@ class CharPlotWidget(QChartView):
         self.setRenderHint(QPainter.Antialiasing)
 
         self._chart = self.chart()
+        self._axis_x = QValueAxis()
+        self._axis_y = QValueAxis()
 
-        self.series = QLineSeries()
-        self.series.append(0, 6)
-        self.series.append(2, 4)
-        self.series.append(3, 8)
-        self.series.append(7, 4)
-        self.series.append(9, 5)
+        self.series = QLineSeries(self)
 
         self._chart.addSeries(self.series)
+        self._chart.addAxis(self._axis_x, Qt.AlignBottom)
+        self._chart.addAxis(self._axis_y, Qt.AlignLeft)
+
+        self.series.attachAxis(self._axis_x)
+        self.series.attachAxis(self._axis_y)
+
+        self._axis_x.setTickCount(5)
+        self._axis_x.setRange(0, 10)
+
+        self._axis_y.setTickCount(5)
+        self._axis_y.setRange(0, 10)
+
         self._chart.legend().hide()
-        self._chart.createDefaultAxes()
+
+    def plot(self, xs, ys):
+        self.series.replace([QPointF(x, y) for x, y in zip(xs, ys)])
+
+    @property
+    def axes_titles(self):
+        return self._axis_x.titleText(), self._axis_y.titleText()
+
+    @axes_titles.setter
+    def axes_titles(self, value):
+        x, y = value
+        self._axis_x.setTitleText(x)
+        self._axis_y.setTitleText(y)
 
     @property
     def title(self):
@@ -69,7 +90,7 @@ class VCOCharWidget(QWidget):
 
         self._plotFreq = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotFreq, 0, 0)
-        self._plotFreq.title = 'FV char'
+        self._plotFreq.axes_titles = 'Упр. нарпяжение, В', 'Частота, МГц'
 
         self._plotKvco = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotKvco, 0, 1)
@@ -93,6 +114,9 @@ class VCOCharWidget(QWidget):
         self._plotPhaseNoise.legend.show()
 
         self._ready = False
+
+    def plotResult(self, result):
+        self._plotFreq.plot(xs=result.tune_voltage, ys=result.frequency)
 
     # event handlers
     @pyqtSlot()
