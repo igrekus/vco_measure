@@ -78,7 +78,7 @@ class Domain(QObject):
         return self._instruments.test_sample()
 
     def ref_measure_vco_char(self, params):
-        self._vcoCharMeasurement.measure = self._instruments.ref_measure_vco_char
+        self._vcoCharMeasurement.measure_action = self._instruments.ref_measure_vco_char
         self._vcoCharMeasurement.params = params
 
         self._vcoCharMeasurement.measure()
