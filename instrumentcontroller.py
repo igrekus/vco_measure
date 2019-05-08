@@ -1,3 +1,5 @@
+import random
+
 from instr.pna20 import Pna20
 
 is_mock = False
@@ -131,6 +133,10 @@ class InstrumentController:
             print(ex)
 
         return freqs, amps, freq, amp, cur
+
+    def ref_measure_vco_char(self):
+        print('measuring VCO char')
+        return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [random.randint(0, 10) for _ in range(10)]
 
     @property
     def analyzer_name(self):

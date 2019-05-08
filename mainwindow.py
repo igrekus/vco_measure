@@ -9,6 +9,7 @@ from markermodel import MarkerModel
 from measuremodel import MeasureModel
 from formlayout.formlayout import fedit
 from phaseplotwidget import PhasePlotWidget
+from vcocharwidget import VCOCharWidget
 
 
 @attrs
@@ -36,6 +37,9 @@ class MainWindow(QMainWindow):
 
         # create models
         self._domain = Domain(parent=self)
+
+        self._vcoCharWidget = VCOCharWidget(parent=self)
+        self._ui.tabWidgetMain.addTab(self._vcoCharWidget, 'Характеристика ГУН')
 
         self._measureModel = MeasureModel(parent=self, domain=self._domain)
         self._markerModel = MarkerModel(parent=self)
@@ -76,8 +80,14 @@ class MainWindow(QMainWindow):
         self._domain.measureFinished.connect(self.on_measurementFinished)
         self._markerModel.dataChanged.connect(self.on_markerChanged)
 
+        self._vcoCharWidget.startMeasure.connect(self.on_vcoCharWidget_startMeasure)
+        self._vcoCharWidget.exportResult.connect(self.on_vcoCharWidget_exportResult)
+
+        self._domain.vcoCharMeasurementFinished.connect(self.on_vcoCharMeasurementFinished)
+
     # UI utility methods
     def refreshView(self):
+        # TODO debounce resize event
         self.resizeTable()
         self._plotWidget.tightLayout()
 
@@ -89,6 +99,7 @@ class MainWindow(QMainWindow):
         self._ui.tableMarker.resizeColumnsToContents()
 
     def _modeBeforeConnect(self):
+        self._vcoCharWidget.ready = False
         self._ui.btnCheckSample.setEnabled(False)
         self._ui.btnStartMeasure.setEnabled(False)
         self._ui.btnContinue.setEnabled(False)
@@ -106,6 +117,7 @@ class MainWindow(QMainWindow):
         self._ui.checkVdut.setEnabled(False)
 
     def _modeBeforeCheckSample(self):
+        self._vcoCharWidget.ready = True
         self._ui.btnCheckSample.setEnabled(True)
         self._ui.btnStartMeasure.setEnabled(False)
         self._ui.btnContinue.setEnabled(False)
@@ -278,6 +290,12 @@ class MainWindow(QMainWindow):
 
         self.on_measurementFinished()
 
+    def on_vcoCharWidget_startMeasure(self):
+        self._domain.ref_measure_vco_char(self._vcoCharWidget.params)
+
+    def on_vcoCharWidget_exportResult(self):
+        print('vco export result')
+
     # measurement event handlers
     @pyqtSlot()
     def on_measurementFinished(self):
@@ -296,6 +314,10 @@ class MainWindow(QMainWindow):
 
         self.refreshView()
         self._modeBeforeContinue()
+
+    @pyqtSlot()
+    def on_vcoCharMeasurementFinished(self):
+        self._vcoCharWidget.plotResult(self._domain._vcoCharMeasurement.result)
 
     # helpers
     def _failWith(self, message):
