@@ -83,6 +83,8 @@ class MainWindow(QMainWindow):
         self._vcoCharWidget.startMeasure.connect(self.on_vcoCharWidget_startMeasure)
         self._vcoCharWidget.exportResult.connect(self.on_vcoCharWidget_exportResult)
 
+        self._domain.vcoCharMeasurementFinished.connect(self.on_vcoCharMeasurementFinished)
+
     # UI utility methods
     def refreshView(self):
         # TODO debounce resize event
@@ -289,7 +291,7 @@ class MainWindow(QMainWindow):
         self.on_measurementFinished()
 
     def on_vcoCharWidget_startMeasure(self):
-        print('vco start measure')
+        self._domain.ref_measure_vco_char(self._vcoCharWidget.params)
 
     def on_vcoCharWidget_exportResult(self):
         print('vco export result')
@@ -312,6 +314,10 @@ class MainWindow(QMainWindow):
 
         self.refreshView()
         self._modeBeforeContinue()
+
+    @pyqtSlot()
+    def on_vcoCharMeasurementFinished(self):
+        print(f'plotting results {self._domain._vcoCharMeasurement.result}')
 
     # helpers
     def _failWith(self, message):

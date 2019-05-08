@@ -3,6 +3,7 @@ from attr import attrs, attrib
 from scipy.signal import savgol_filter
 
 from instrumentcontroller import InstrumentController
+from vcocharmeasurement import VCOCharMeasurement
 
 
 @attrs
@@ -33,6 +34,7 @@ class Task(QRunnable):
 class Domain(QObject):
 
     measureFinished = pyqtSignal()
+    vcoCharMeasurementFinished = pyqtSignal()
 
     headers = ['F, Гц', 'Шум, dBc/Hz']
 
@@ -41,6 +43,8 @@ class Domain(QObject):
 
         self._instruments = InstrumentController()
         self._threadPool = QThreadPool()
+
+        self._vcoCharMeasurement = VCOCharMeasurement()
 
         self._offset = 0.0
         self._freqOffset = 0.0
@@ -72,6 +76,15 @@ class Domain(QObject):
     def check(self):
         print('check sample presence')
         return self._instruments.test_sample()
+
+    def ref_measure_vco_char(self, params):
+        self._vcoCharMeasurement.measure = self._instruments.ref_measure_vco_char
+        self._vcoCharMeasurement.params = params
+
+        self._vcoCharMeasurement.measure()
+        self._vcoCharMeasurement.process()
+
+        self.vcoCharMeasurementFinished.emit()
 
     def measure(self, params: Params):
         print(f'run measurement with {params}')

@@ -156,3 +156,7 @@ class VCOCharWidget(QWidget):
     def ready(self, value):
         self._ui.btnMeasure.setEnabled(value)
         self._ready = value
+
+    @property
+    def params(self):
+        return self._params

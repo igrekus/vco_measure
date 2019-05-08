@@ -132,6 +132,9 @@ class InstrumentController:
 
         return freqs, amps, freq, amp, cur
 
+    def ref_measure_vco_char(self):
+        print('measuring VCO char')
+
     @property
     def analyzer_name(self):
         return str(self._analyzer)
