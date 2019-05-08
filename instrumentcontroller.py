@@ -134,6 +134,7 @@ class InstrumentController:
 
     def ref_measure_vco_char(self):
         print('measuring VCO char')
+        return [0, 1, 2, 3, 4], [0, 1, 2, 3, 4]
 
     @property
     def analyzer_name(self):
