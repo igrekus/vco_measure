@@ -11,7 +11,7 @@ def parse_measure_string(string: str):
 
 class InstrumentController:
 
-    def __init__(self, ip='169.254.9.227'):
+    def __init__(self, ip='192.168.0.102'):
         self._ip = ip
         self._analyzer: Pna20 = None
 
