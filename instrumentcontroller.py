@@ -2,7 +2,7 @@ import random
 
 from instr.pna20 import Pna20
 
-is_mock = False
+is_mock = True
 
 
 def parse_measure_string(string: str):
@@ -11,7 +11,7 @@ def parse_measure_string(string: str):
 
 class InstrumentController:
 
-    def __init__(self, ip='169.254.9.227'):
+    def __init__(self, ip='192.168.0.102'):
         self._ip = ip
         self._analyzer: Pna20 = None
 
@@ -136,7 +136,13 @@ class InstrumentController:
 
     def ref_measure_vco_char(self):
         print('measuring VCO char')
-        return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [random.randint(0, 10) for _ in range(10)]
+        return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], \
+               [random.randint(0, 10) for _ in range(10)], \
+               [random.randint(0, 10) for _ in range(10)], \
+               [random.randint(0, 10) for _ in range(10)], \
+               [random.randint(0, 10) for _ in range(10)], \
+               [random.randint(0, 10) for _ in range(10)], \
+               [random.randint(0, 10) for _ in range(10)]
 
     @property
     def analyzer_name(self):
