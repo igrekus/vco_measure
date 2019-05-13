@@ -94,29 +94,34 @@ class VCOCharWidget(QWidget):
 
         self._plotKvco = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotKvco, 0, 1)
-        self._plotKvco.title = 'Kv'
+        self._plotKvco.axes_titles = 'Упр. нарпяжение, В', 'Kvco, МГц/В'
 
         self._plotSupply1Current = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotSupply1Current, 1, 0)
-        self._plotSupply1Current.title = 'Supply current'
+        self._plotSupply1Current.axes_titles = 'Упр. нарпяжение, В', 'Ток источника, мА'
 
         self._plotPower = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotPower, 1, 1)
-        self._plotPower.title = 'Power'
+        self._plotPower.axes_titles = 'Упр. нарпяжение, В', 'Мощность, дБм'
 
         self._plotPushing = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotPushing, 2, 0)
-        self._plotPushing.title = 'Pushing'
+        self._plotPushing.axes_titles = 'Упр. нарпяжение, В', 'Pushing, МГц/В'
 
         self._plotPhaseNoise = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotPhaseNoise, 2, 1)
-        self._plotPhaseNoise.title = 'SSB phase noise at offset'
+        self._plotPhaseNoise.axes_titles = 'Упр. нарпяжение, В', 'Фазовый шум при частоте, дБц/Гц'
         self._plotPhaseNoise.legend.show()
 
         self._ready = False
 
     def plotResult(self, result):
         self._plotFreq.plot(xs=result.tune_voltage, ys=result.frequency)
+        self._plotKvco.plot(xs=result.tune_voltage, ys=result.kvco)
+        self._plotSupply1Current.plot(xs=result.tune_voltage, ys=result.supply_current)
+        self._plotPower.plot(xs=result.tune_voltage, ys=result.power)
+        self._plotPushing.plot(xs=result.tune_voltage, ys=result.pushing)
+        self._plotPhaseNoise.plot(xs=result.tune_voltage, ys=result.noise)
 
     # event handlers
     @pyqtSlot()
