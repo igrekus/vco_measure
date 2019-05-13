@@ -46,7 +46,7 @@ class VCOCharProcessedResult:
 class VCOCharMeasurement:
 
     def __init__(self):
-        self.measure_action = lambda: ([0], [0])
+        self.measure_action = lambda: ([0], [0], [0], [0], [0], [0], [0])
         self.params = None
 
         self._measure_action_result = None
