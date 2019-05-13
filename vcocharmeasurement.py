@@ -55,8 +55,8 @@ class VCOCharMeasurement:
     def measure(self):
         print(f'vco measure call {self.params}')
 
-        volt, freq = self.measure_action()
-        self._measure_action_result = VCOCharMeasuredResult(volt, freq, freq, freq, freq, freq, freq)
+        volt, freq, kvco, curr, power, push, noise = self.measure_action()
+        self._measure_action_result = VCOCharMeasuredResult(volt, freq, kvco, curr, power, push, noise)
 
         print(f'result {self._measure_action_result}')
 
