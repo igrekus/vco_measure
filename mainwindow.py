@@ -14,6 +14,7 @@ from vcocharwidget import VCOCharWidget
 
 @attrs
 class Settings:
+    markerOffset = attrib(type=list)
     offset = attrib(type=float, default=0.0)
     freqOffset = attrib(type=float, default=0.0)
     ampOffset = attrib(type=float, default=0.0)
@@ -21,7 +22,7 @@ class Settings:
 
     @classmethod
     def from_values(cls, data):
-        return cls(offset=float(data[0]), freqOffset=float(data[1]) * 1_000_000, ampOffset=float(data[2]), curOffset=float(data[3]) / 1_000)
+        return cls(offset=float(data[0]), freqOffset=float(data[1]) * 1_000_000, ampOffset=float(data[2]), curOffset=float(data[3]) / 1_000, markerOffset=[float(d) for d in data[5:]])
 
 
 class MainWindow(QMainWindow):
@@ -266,13 +267,15 @@ class MainWindow(QMainWindow):
     # action triggers
     @pyqtSlot()
     def on_actSettings_triggered(self):
-        data = (
+        data = [
             ('Параметр шума', self._domain._offset),
             ('Параметр частоты', self._domain._freqOffset / 1_000_000),
             ('Параметр мощности', self._domain._ampOffset),
             ('Параметр тока', self._domain._curOffset * 1000),
             ('Показывать частоту', self._show_stats)
-        )
+        ]
+        data = data + [(F'Маркер {num + 1}', float(offset)) for num, offset in enumerate(self._domain._markerOffset)]
+
         # TODO сменить единицу измерения частоты отстройки
         values = fedit(data=data, title='Настройки')
         if not values:
@@ -282,6 +285,9 @@ class MainWindow(QMainWindow):
 
         self._show_stats = values[4]
         self._ui.widgetStats.setVisible(self._show_stats)
+        # if self._domain._markerOffset != values[5:]:
+
+        self.on_measurementFinished()
 
     # model signals
     def on_markerChanged(self, first, last, roles):
