@@ -38,7 +38,7 @@
          <item>
           <widget class="QLineEdit" name="editAnalyzerAddr">
            <property name="text">
-            <string>169.254.9.227</string>
+            <string>192.168.0.102</string>
            </property>
            <property name="placeholderText">
             <string>Адрес анализатора...</string>

@@ -197,6 +197,11 @@ class MainWindow(QMainWindow):
             aver=self._ui.spinAver.value()
         )
 
+    def _updateStatDisplay(self):
+        self._ui.editFreq.setText(f'{round(self._domain._freq / 1_000_000, 2)} МГц')
+        self._ui.editAmp.setText(f'{round(self._domain._amp, 2)} дБц')
+        self._ui.editCur.setText(f'{round(self._domain._cur * 1_000, 2)} мА')
+
     # ui event handlers
     def resizeEvent(self, event):
         self.refreshView()
@@ -312,6 +317,7 @@ class MainWindow(QMainWindow):
         # self._plotWidget._title = f'Частота: {round(self._domain._freq / 1_000_000, 2)} МГц, ' \
         #                          f'мощность: {round(self._domain._amp, 2)} дБц, ' \
         #                          f'ток потребления: {round(self._domain._cur * 1_000, 2)} мА'
+        self._updateStatDisplay()
 
         self._plotWidget._stats = self._markerModel.stats
 
