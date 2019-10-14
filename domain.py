@@ -122,11 +122,11 @@ class Domain(QObject):
             return self._amps[row]
 
     def ampsForMarkers(self, markers):
-        if self._freqs:
-            amps = [self._smoothAmps[self._freqs.index(min(self._freqs, key=lambda x: abs(freq - x)))] for freq in markers]
-            amps = [amp + offset for amp, offset in zip(amps, self._markerOffset)]
-            return amps
-        return []
+        if not self._freqs:
+            return []
+        amps = [self._smoothAmps[self._freqs.index(min(self._freqs, key=lambda x: abs(freq - x)))] for freq in markers]
+        amps = [amp + offset for amp, offset in zip(amps, self._markerOffset)]
+        return amps
 
     @property
     def analyzerAddress(self):
