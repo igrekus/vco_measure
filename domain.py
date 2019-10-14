@@ -58,6 +58,7 @@ class Domain(QObject):
         self._markerOffset = [0.0] * 5
 
         self._freqs = list()
+        self._raw_amps = list()
         self._amps = list()
         self._smoothAmps = list()
 
@@ -71,7 +72,6 @@ class Domain(QObject):
 
     def applySettings(self, settings):
         self._markerOffset.clear()
-        self._offset = settings.offsetF1
         self._offsetF1 = settings.offsetF1
         self._offsetF2 = settings.offsetF2
         self._offsetF3 = settings.offsetF3
@@ -106,17 +106,13 @@ class Domain(QObject):
 
     def _measureFunc(self, params: Params):
         print(f'start measurement task')
-        self._freqs, self._amps, self._freq, self._amp, self._cur = self._instruments.measure(params)
+        self._freqs, self._raw_amps, self._freq, self._amp, self._cur = self._instruments.measure(params)
         print('end measurement task')
 
     def _processingFunc(self):
         print('processing stats')
-        self._amps = list(map(lambda x: x + self._offset, self._amps))
+        self._amps = list(map(lambda x: x + self._offset, self._raw_amps))
         self._smoothAmps = savgol_filter(self._amps, 31, 3)
-
-        self._amp = float(self._amp) + self._ampOffset
-        self._freq = float(self._freq) + self._freqOffset
-        self._cur = float(self._cur) + self._curOffset
 
         self.measureFinished.emit()
 

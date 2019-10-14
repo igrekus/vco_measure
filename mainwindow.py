@@ -224,6 +224,25 @@ class MainWindow(QMainWindow):
     def resizeEvent(self, event):
         self.refreshView()
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_F1:
+            self._domain._offset = self._domain._offsetF1
+            self._domain._processingFunc()
+        elif event.key() == Qt.Key_F2:
+            self._domain._offset = self._domain._offsetF2
+            self._domain._processingFunc()
+        elif event.key() == Qt.Key_F3:
+            self._domain._offset = self._domain._offsetF3
+            self._domain._processingFunc()
+        elif event.key() == Qt.Key_F4:
+            self._domain._offset = self._domain._offsetF4
+            self._domain._processingFunc()
+        elif event.key() == Qt.Key_F5:
+            self._domain._offset = self._domain._offsetF5
+            self._domain._processingFunc()
+
+        super().keyPressEvent(event)
+
     @pyqtSlot()
     def on_btnSearchInstruments_clicked(self):
         if not self._domain.connect():
@@ -324,7 +343,6 @@ class MainWindow(QMainWindow):
 
         self._domain.applySettings(Settings.from_values(values))
 
-        self._updateStatDisplay()
         self.on_measurementFinished()
 
     # model signals
