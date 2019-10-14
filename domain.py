@@ -161,13 +161,13 @@ class Domain(QObject):
 
     @property
     def freq(self):
-        return self._freq + self._freqOffset
+        return float(self._freq) + self._freqOffset
 
     @property
     def amp(self):
-        return self._amp + self._ampOffset
+        return float(self._amp) + self._ampOffset
 
     @property
     def cur(self):
-        return self._cur + self._curOffset
+        return float(self._cur) + self._curOffset
 
