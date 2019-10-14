@@ -313,6 +313,10 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_measurementFinished(self):
         self._measureModel.init()
+
+        if not self._domain._freqs:
+            return
+
         self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
 
         self._plotWidget._title = ""
