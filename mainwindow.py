@@ -52,7 +52,9 @@ class MainWindow(QMainWindow):
         self._ui.tabPlot.setLayout(self._ui.layoutPlot)
 
         # UI hack
-        self._show_stats = False
+        self._show_freq = False
+        self._show_amp = False
+        self._show_curr  = False
 
         self._init()
 
@@ -74,7 +76,7 @@ class MainWindow(QMainWindow):
             '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.'
             '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')))
 
-        self._ui.widgetStats.setVisible(self._show_stats)
+        self._ui.widgetStats.setVisible(any([self._show_freq, self._show_amp, self._show_curr]))
 
         self._setupSignals()
         self._modeBeforeConnect()
@@ -200,9 +202,9 @@ class MainWindow(QMainWindow):
         )
 
     def _updateStatDisplay(self):
-        self._ui.editFreq.setText(f'{round(self._domain._freq / 1_000_000, 2)} MHZ')
-        self._ui.editAmp.setText(f'{round(self._domain._amp, 2)} dBm')
-        self._ui.editCur.setText(f'{round(self._domain._cur * 1_000, 2)} mA')
+        self._ui.editFreq.setText(f'{round(self._domain.freq / 1_000_000, 2)} MHZ')
+        self._ui.editAmp.setText(f'{round(self._domain.amp, 2)} dBm')
+        self._ui.editCur.setText(f'{round(self._domain.cur * 1_000, 2)} mA')
 
     # ui event handlers
     def resizeEvent(self, event):
@@ -275,25 +277,29 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_actSettings_triggered(self):
         data = [
-            ('Noise parameter', self._domain._offset),
-            ('Freq parameter', self._domain._freqOffset / 1_000_000),
-            ('Power parameter', self._domain._ampOffset),
-            ('Current parameter', self._domain._curOffset * 1000),
-            ('Show frequency', self._show_stats)
+            ('Show frequency', self._show_freq),
+            ('Show amplitude', self._show_amp),
+            ('Show current', self._show_curr)
+        ]
+
+        values = fedit(data=data, title='Settings')
+        if not values:
+            return
+
+        self._updateStatWidgetVisibility(values)
+
+        self.on_measurementFinished()
+
         ]
         data = data + [(F'Marker {num + 1}', float(offset)) for num, offset in enumerate(self._domain._markerOffset)]
 
-        # TODO сменить единицу измерения частоты отстройки
         values = fedit(data=data, title='Settings')
         if not values:
             return
 
         self._domain.applySettings(Settings.from_values(values))
 
-        self._show_stats = values[4]
-        self._ui.widgetStats.setVisible(self._show_stats)
-        # if self._domain._markerOffset != values[5:]:
-
+        self._updateStatDisplay()
         self.on_measurementFinished()
 
     # model signals
@@ -340,3 +346,17 @@ class MainWindow(QMainWindow):
     # helpers
     def _failWith(self, message):
         QMessageBox.information(self, 'Error', message)
+
+    def _updateStatWidgetVisibility(self, values):
+        self._ui.widgetStats.setVisible(any(values))
+
+        self._show_freq, self._show_amp, self._show_curr = values
+
+        self._ui.lblFreq.setVisible(self._show_freq)
+        self._ui.editFreq.setVisible(self._show_freq)
+
+        self._ui.lblAmp.setVisible(self._show_amp)
+        self._ui.editAmp.setVisible(self._show_amp)
+
+        self._ui.lblCur.setVisible(self._show_curr)
+        self._ui.editCur.setVisible(self._show_curr)

@@ -152,3 +152,15 @@ class Domain(QObject):
     def smoothYs(self):
         return self._smoothAmps
 
+    @property
+    def freq(self):
+        return self._freq + self._freqOffset
+
+    @property
+    def amp(self):
+        return self._amp + self._ampOffset
+
+    @property
+    def cur(self):
+        return self._cur + self._curOffset
+

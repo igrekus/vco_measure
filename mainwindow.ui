@@ -511,7 +511,7 @@
              <item>
               <widget class="QLabel" name="lblAmp">
                <property name="text">
-                <string>&lt;b&gt;Pow:&lt;/b&gt;</string>
+                <string>&lt;b&gt;Amp:&lt;/b&gt;</string>
                </property>
               </widget>
              </item>
