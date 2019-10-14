@@ -10,7 +10,7 @@ class MarkerModel(QAbstractTableModel):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self._headers = ['#', 'Частота', 'дБн/Гц']
+        self._headers = ['#', 'Freq', 'dBn/Hz']
 
         self._markerIndex = 4
 

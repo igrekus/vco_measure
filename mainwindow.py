@@ -40,7 +40,7 @@ class MainWindow(QMainWindow):
         self._domain = Domain(parent=self)
 
         self._vcoCharWidget = VCOCharWidget(parent=self)
-        self._ui.tabWidgetMain.addTab(self._vcoCharWidget, 'Характеристика ГУН')
+        self._ui.tabWidgetMain.addTab(self._vcoCharWidget, 'VCO characteristics')
 
         self._measureModel = MeasureModel(parent=self, domain=self._domain)
         self._markerModel = MarkerModel(parent=self)
@@ -61,6 +61,8 @@ class MainWindow(QMainWindow):
 
         self._ui.tableMeasure.setModel(self._measureModel)
         self._ui.tableMarker.setModel(self._markerModel)
+
+        self._vcoCharWidget._ui.grpResult.hide()
 
         self._modeBeforeConnect()
         self.refreshView()
@@ -198,9 +200,9 @@ class MainWindow(QMainWindow):
         )
 
     def _updateStatDisplay(self):
-        self._ui.editFreq.setText(f'{round(self._domain._freq / 1_000_000, 2)} МГц')
-        self._ui.editAmp.setText(f'{round(self._domain._amp, 2)} дБц')
-        self._ui.editCur.setText(f'{round(self._domain._cur * 1_000, 2)} мА')
+        self._ui.editFreq.setText(f'{round(self._domain._freq / 1_000_000, 2)} MHZ')
+        self._ui.editAmp.setText(f'{round(self._domain._amp, 2)} dBm')
+        self._ui.editCur.setText(f'{round(self._domain._cur * 1_000, 2)} mA')
 
     # ui event handlers
     def resizeEvent(self, event):
@@ -209,7 +211,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_btnSearchInstruments_clicked(self):
         if not self._domain.connect():
-            self._failWith('Не удалось найти инструменты, проверьте подключение.\nПодробности в логах.')
+            self._failWith('Could not find the instruments, check connection.\nConsult the log for more detail.')
             print('instruments not found')
             return
 
@@ -220,7 +222,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_btnCheckSample_clicked(self):
         if not self._domain.check():
-            self._failWith('Не удалось найти образец, проверьте подключение.\nПодробности в логах.')
+            self._failWith('Could not find the test sample, check connection.\nConsult the log for more detail.')
             print('sample not detected')
             return
 
@@ -231,7 +233,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_btnStartMeasure_clicked(self):
         if not self._domain.check():
-            self._failWith('Не удалось найти образец, проверьте подключение.\nПодробности в логах.')
+            self._failWith('Could not find the test sample, check connection.\nConsult the log for more detail.')
             print('sample not detected')
             return
 
@@ -273,16 +275,16 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_actSettings_triggered(self):
         data = [
-            ('Параметр шума', self._domain._offset),
-            ('Параметр частоты', self._domain._freqOffset / 1_000_000),
-            ('Параметр мощности', self._domain._ampOffset),
-            ('Параметр тока', self._domain._curOffset * 1000),
-            ('Показывать частоту', self._show_stats)
+            ('Noise parameter', self._domain._offset),
+            ('Freq parameter', self._domain._freqOffset / 1_000_000),
+            ('Power parameter', self._domain._ampOffset),
+            ('Current parameter', self._domain._curOffset * 1000),
+            ('Show frequency', self._show_stats)
         ]
-        data = data + [(F'Маркер {num + 1}', float(offset)) for num, offset in enumerate(self._domain._markerOffset)]
+        data = data + [(F'Marker {num + 1}', float(offset)) for num, offset in enumerate(self._domain._markerOffset)]
 
         # TODO сменить единицу измерения частоты отстройки
-        values = fedit(data=data, title='Настройки')
+        values = fedit(data=data, title='Settings')
         if not values:
             return
 
@@ -333,4 +335,4 @@ class MainWindow(QMainWindow):
 
     # helpers
     def _failWith(self, message):
-        QMessageBox.information(self, 'Ошибка', message)
+        QMessageBox.information(self, 'Error', message)

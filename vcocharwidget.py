@@ -90,27 +90,27 @@ class VCOCharWidget(QWidget):
 
         self._plotFreq = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotFreq, 0, 0)
-        self._plotFreq.axes_titles = 'Упр. нарпяжение, В', 'Частота, МГц'
+        self._plotFreq.axes_titles = 'Ctrl voltage, V', 'Freq, MHz'
 
         self._plotKvco = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotKvco, 0, 1)
-        self._plotKvco.axes_titles = 'Упр. нарпяжение, В', 'Kvco, МГц/В'
+        self._plotKvco.axes_titles = 'Ctrl voltage, V', 'Kvco, MHz/V'
 
         self._plotSupply1Current = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotSupply1Current, 1, 0)
-        self._plotSupply1Current.axes_titles = 'Упр. нарпяжение, В', 'Ток источника, мА'
+        self._plotSupply1Current.axes_titles = 'Ctrl voltage, V', 'Src current, mA'
 
         self._plotPower = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotPower, 1, 1)
-        self._plotPower.axes_titles = 'Упр. нарпяжение, В', 'Мощность, дБм'
+        self._plotPower.axes_titles = 'Ctrl voltage, V', 'Pow, dBm'
 
         self._plotPushing = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotPushing, 2, 0)
-        self._plotPushing.axes_titles = 'Упр. нарпяжение, В', 'Pushing, МГц/В'
+        self._plotPushing.axes_titles = 'Ctrl voltage, V', 'Pushing, Mhz/V'
 
         self._plotPhaseNoise = CharPlotWidget(self)
         self._ui.plotGrid.addWidget(self._plotPhaseNoise, 2, 1)
-        self._plotPhaseNoise.axes_titles = 'Упр. нарпяжение, В', 'Фазовый шум при частоте, дБц/Гц'
+        self._plotPhaseNoise.axes_titles = 'Ctrl voltage, V', 'Phase noise at freq, dBc/Hz'
         self._plotPhaseNoise.legend.show()
 
         self._ready = False
