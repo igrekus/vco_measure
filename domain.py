@@ -47,6 +47,11 @@ class Domain(QObject):
         self._vcoCharMeasurement = VCOCharMeasurement()
 
         self._offset = 0.0
+        self._offsetF1 = 0.0
+        self._offsetF2 = 0.0
+        self._offsetF3 = 0.0
+        self._offsetF4 = 0.0
+        self._offsetF5 = 0.0
         self._freqOffset = 0.0
         self._ampOffset = 0.0
         self._curOffset = 0.0
@@ -65,7 +70,13 @@ class Domain(QObject):
         self._amps.clear()
 
     def applySettings(self, settings):
-        self._offset = settings.offset
+        self._markerOffset.clear()
+        self._offset = settings.offsetF1
+        self._offsetF1 = settings.offsetF1
+        self._offsetF2 = settings.offsetF2
+        self._offsetF3 = settings.offsetF3
+        self._offsetF4 = settings.offsetF4
+        self._offsetF5 = settings.offsetF5
         self._freqOffset = settings.freqOffset
         self._ampOffset = settings.ampOffset
         self._curOffset = settings.curOffset

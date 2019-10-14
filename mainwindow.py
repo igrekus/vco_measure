@@ -15,14 +15,28 @@ from vcocharwidget import VCOCharWidget
 @attrs
 class Settings:
     markerOffset = attrib(type=list)
-    offset = attrib(type=float, default=0.0)
+    offsetF1 = attrib(type=float, default=0.0)
+    offsetF2 = attrib(type=float, default=0.0)
+    offsetF3 = attrib(type=float, default=0.0)
+    offsetF4 = attrib(type=float, default=0.0)
+    offsetF5 = attrib(type=float, default=0.0)
     freqOffset = attrib(type=float, default=0.0)
     ampOffset = attrib(type=float, default=0.0)
     curOffset = attrib(type=float, default=0.0)
 
     @classmethod
     def from_values(cls, data):
-        return cls(offset=float(data[0]), freqOffset=float(data[1]) * 1_000_000, ampOffset=float(data[2]), curOffset=float(data[3]) / 1_000, markerOffset=[float(d) for d in data[5:]])
+        return cls(
+            offsetF1=float(data[0]),
+            offsetF2=float(data[1]),
+            offsetF3=float(data[2]),
+            offsetF4=float(data[3]),
+            offsetF5=float(data[4]),
+            freqOffset=float(data[5]) * 1_000_000,
+            ampOffset=float(data[6]),
+            curOffset=float(data[7]) / 1_000,
+            markerOffset=[float(d) for d in data[8:]]
+        )
 
 
 class MainWindow(QMainWindow):
@@ -290,6 +304,17 @@ class MainWindow(QMainWindow):
 
         self.on_measurementFinished()
 
+    @pyqtSlot()
+    def on_btnOffset_clicked(self):
+        data = [
+            ('Noise offset (F1)', self._domain._offsetF1),
+            ('Noise offset (F2)', self._domain._offsetF2),
+            ('Noise offset (F3)', self._domain._offsetF3),
+            ('Noise offset (F4)', self._domain._offsetF4),
+            ('Noise offset (F5)', self._domain._offsetF5),
+            ('Freq offset', self._domain._freqOffset / 1_000_000),
+            ('Power offset', self._domain._ampOffset),
+            ('Current offset', self._domain._curOffset * 1000),
         ]
         data = data + [(F'Marker {num + 1}', float(offset)) for num, offset in enumerate(self._domain._markerOffset)]
 
