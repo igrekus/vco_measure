@@ -37,7 +37,7 @@
         </size>
        </property>
        <property name="title">
-        <string>Параметры измерения</string>
+        <string>Measurement parameters</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
         <property name="sizeConstraint">
@@ -53,7 +53,7 @@
                <bool>true</bool>
               </property>
               <property name="text">
-               <string>Uпит1=</string>
+               <string>Usup1</string>
               </property>
               <property name="checked">
                <bool>true</bool>
@@ -69,7 +69,7 @@
                <string/>
               </property>
               <property name="suffix">
-               <string> В</string>
+               <string> V</string>
               </property>
               <property name="maximum">
                <double>30.000000000000000</double>
@@ -85,7 +85,7 @@
                <bool>true</bool>
               </property>
               <property name="text">
-               <string>Uпит2=</string>
+               <string>Usup2</string>
               </property>
              </widget>
             </item>
@@ -95,7 +95,7 @@
                <bool>false</bool>
               </property>
               <property name="suffix">
-               <string> В</string>
+               <string> V</string>
               </property>
               <property name="maximum">
                <double>30.000000000000000</double>
@@ -122,7 +122,7 @@
             <item>
              <widget class="QLabel" name="lblDutVstart">
               <property name="text">
-               <string>Uупр1=</string>
+               <string>Uctrl1</string>
               </property>
              </widget>
             </item>
@@ -132,7 +132,7 @@
                <bool>true</bool>
               </property>
               <property name="suffix">
-               <string> В</string>
+               <string> V</string>
               </property>
               <property name="minimum">
                <double>-5.000000000000000</double>
@@ -151,7 +151,7 @@
             <item>
              <widget class="QLabel" name="lblDutVend">
               <property name="text">
-               <string>Uупр2=</string>
+               <string>Uctrl2</string>
               </property>
              </widget>
             </item>
@@ -161,7 +161,7 @@
                <bool>true</bool>
               </property>
               <property name="suffix">
-               <string> В</string>
+               <string> V</string>
               </property>
               <property name="minimum">
                <double>-5.000000000000000</double>
@@ -180,7 +180,7 @@
             <item>
              <widget class="QLabel" name="lblDutVstep">
               <property name="text">
-               <string>Шаг=</string>
+               <string>Step</string>
               </property>
              </widget>
             </item>
@@ -190,7 +190,7 @@
                <bool>true</bool>
               </property>
               <property name="suffix">
-               <string> В</string>
+               <string> V</string>
               </property>
               <property name="maximum">
                <double>15.000000000000000</double>
@@ -210,14 +210,14 @@
             <item row="0" column="0">
              <widget class="QLabel" name="lblOffsetF1">
               <property name="text">
-               <string>Оффсет1=</string>
+               <string>Offset1</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
              <widget class="QDoubleSpinBox" name="spinOffsetF1">
               <property name="suffix">
-               <string> кГц</string>
+               <string> kHz</string>
               </property>
               <property name="maximum">
                <double>1000000.000000000000000</double>
@@ -230,14 +230,14 @@
             <item row="1" column="0">
              <widget class="QLabel" name="lblOffsetF2">
               <property name="text">
-               <string>Оффсет2=</string>
+               <string>Offset2</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
              <widget class="QDoubleSpinBox" name="spinOffsetF2">
               <property name="suffix">
-               <string> кГц</string>
+               <string> kHz</string>
               </property>
               <property name="maximum">
                <double>1000000.000000000000000</double>
@@ -250,14 +250,14 @@
             <item row="2" column="0">
              <widget class="QLabel" name="lblOffsetF3">
               <property name="text">
-               <string>Оффсет3=</string>
+               <string>Offset3</string>
               </property>
              </widget>
             </item>
             <item row="2" column="1">
              <widget class="QDoubleSpinBox" name="spinOffsetF3">
               <property name="suffix">
-               <string> кГц</string>
+               <string> kHz</string>
               </property>
               <property name="maximum">
                <double>1000000.000000000000000</double>
@@ -270,14 +270,14 @@
             <item row="3" column="0">
              <widget class="QLabel" name="lblOffsetF4">
               <property name="text">
-               <string>Оффсет4=</string>
+               <string>Offset4</string>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
              <widget class="QDoubleSpinBox" name="spinOffsetF4">
               <property name="suffix">
-               <string> кГц</string>
+               <string> kHz</string>
               </property>
               <property name="maximum">
                <double>1000000.000000000000000</double>
@@ -304,7 +304,7 @@
             <item>
              <widget class="QPushButton" name="btnExport">
               <property name="text">
-               <string>Экспорт</string>
+               <string>Export</string>
               </property>
              </widget>
             </item>
@@ -314,7 +314,7 @@
                <bool>false</bool>
               </property>
               <property name="text">
-               <string>Измерить</string>
+               <string>Measure</string>
               </property>
              </widget>
             </item>
@@ -328,13 +328,13 @@
      <item>
       <widget class="QGroupBox" name="grpResult">
        <property name="title">
-        <string>Результат</string>
+        <string>Result</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QLabel" name="lblResult">
           <property name="text">
-           <string>Результат</string>
+           <string>Result</string>
           </property>
          </widget>
         </item>
@@ -365,7 +365,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Графики</string>
+      <string>Plots</string>
      </property>
      <layout class="QGridLayout" name="plotGrid"/>
     </widget>

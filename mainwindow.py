@@ -15,14 +15,28 @@ from vcocharwidget import VCOCharWidget
 @attrs
 class Settings:
     markerOffset = attrib(type=list)
-    offset = attrib(type=float, default=0.0)
+    offsetF1 = attrib(type=float, default=0.0)
+    offsetF2 = attrib(type=float, default=0.0)
+    offsetF3 = attrib(type=float, default=0.0)
+    offsetF4 = attrib(type=float, default=0.0)
+    offsetF5 = attrib(type=float, default=0.0)
     freqOffset = attrib(type=float, default=0.0)
     ampOffset = attrib(type=float, default=0.0)
     curOffset = attrib(type=float, default=0.0)
 
     @classmethod
     def from_values(cls, data):
-        return cls(offset=float(data[0]), freqOffset=float(data[1]) * 1_000_000, ampOffset=float(data[2]), curOffset=float(data[3]) / 1_000, markerOffset=[float(d) for d in data[5:]])
+        return cls(
+            offsetF1=float(data[0]),
+            offsetF2=float(data[1]),
+            offsetF3=float(data[2]),
+            offsetF4=float(data[3]),
+            offsetF5=float(data[4]),
+            freqOffset=float(data[5]) * 1_000_000,
+            ampOffset=float(data[6]),
+            curOffset=float(data[7]) / 1_000,
+            markerOffset=[float(d) for d in data[8:]]
+        )
 
 
 class MainWindow(QMainWindow):
@@ -40,7 +54,7 @@ class MainWindow(QMainWindow):
         self._domain = Domain(parent=self)
 
         self._vcoCharWidget = VCOCharWidget(parent=self)
-        self._ui.tabWidgetMain.addTab(self._vcoCharWidget, 'Характеристика ГУН')
+        self._ui.tabWidgetMain.addTab(self._vcoCharWidget, 'VCO characteristics')
 
         self._measureModel = MeasureModel(parent=self, domain=self._domain)
         self._markerModel = MarkerModel(parent=self)
@@ -52,7 +66,9 @@ class MainWindow(QMainWindow):
         self._ui.tabPlot.setLayout(self._ui.layoutPlot)
 
         # UI hack
-        self._show_stats = False
+        self._show_freq = False
+        self._show_amp = False
+        self._show_curr  = False
 
         self._init()
 
@@ -61,6 +77,8 @@ class MainWindow(QMainWindow):
 
         self._ui.tableMeasure.setModel(self._measureModel)
         self._ui.tableMarker.setModel(self._markerModel)
+
+        self._vcoCharWidget._ui.grpResult.hide()
 
         self._modeBeforeConnect()
         self.refreshView()
@@ -72,7 +90,7 @@ class MainWindow(QMainWindow):
             '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.'
             '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')))
 
-        self._ui.widgetStats.setVisible(self._show_stats)
+        self._ui.widgetStats.setVisible(any([self._show_freq, self._show_amp, self._show_curr]))
 
         self._setupSignals()
         self._modeBeforeConnect()
@@ -198,18 +216,37 @@ class MainWindow(QMainWindow):
         )
 
     def _updateStatDisplay(self):
-        self._ui.editFreq.setText(f'{round(self._domain._freq / 1_000_000, 2)} МГц')
-        self._ui.editAmp.setText(f'{round(self._domain._amp, 2)} дБц')
-        self._ui.editCur.setText(f'{round(self._domain._cur * 1_000, 2)} мА')
+        self._ui.editFreq.setText(f'{round(self._domain.freq / 1_000_000, 2)} MHZ')
+        self._ui.editAmp.setText(f'{round(self._domain.amp, 2)} dBm')
+        self._ui.editCur.setText(f'{round(self._domain.cur * 1_000, 2)} mA')
 
     # ui event handlers
     def resizeEvent(self, event):
         self.refreshView()
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_F1:
+            self._domain._offset = self._domain._offsetF1
+            self._domain._processingFunc()
+        elif event.key() == Qt.Key_F2:
+            self._domain._offset = self._domain._offsetF2
+            self._domain._processingFunc()
+        elif event.key() == Qt.Key_F3:
+            self._domain._offset = self._domain._offsetF3
+            self._domain._processingFunc()
+        elif event.key() == Qt.Key_F4:
+            self._domain._offset = self._domain._offsetF4
+            self._domain._processingFunc()
+        elif event.key() == Qt.Key_F5:
+            self._domain._offset = self._domain._offsetF5
+            self._domain._processingFunc()
+
+        super().keyPressEvent(event)
+
     @pyqtSlot()
     def on_btnSearchInstruments_clicked(self):
         if not self._domain.connect():
-            self._failWith('Не удалось найти инструменты, проверьте подключение.\nПодробности в логах.')
+            self._failWith('Could not find the instruments, check connection.\nConsult the log for more detail.')
             print('instruments not found')
             return
 
@@ -220,7 +257,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_btnCheckSample_clicked(self):
         if not self._domain.check():
-            self._failWith('Не удалось найти образец, проверьте подключение.\nПодробности в логах.')
+            self._failWith('Could not find the test sample, check connection.\nConsult the log for more detail.')
             print('sample not detected')
             return
 
@@ -231,7 +268,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_btnStartMeasure_clicked(self):
         if not self._domain.check():
-            self._failWith('Не удалось найти образец, проверьте подключение.\nПодробности в логах.')
+            self._failWith('Could not find the test sample, check connection.\nConsult the log for more detail.')
             print('sample not detected')
             return
 
@@ -273,24 +310,38 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_actSettings_triggered(self):
         data = [
-            ('Параметр шума', self._domain._offset),
-            ('Параметр частоты', self._domain._freqOffset / 1_000_000),
-            ('Параметр мощности', self._domain._ampOffset),
-            ('Параметр тока', self._domain._curOffset * 1000),
-            ('Показывать частоту', self._show_stats)
+            ('Show frequency', self._show_freq),
+            ('Show amplitude', self._show_amp),
+            ('Show current', self._show_curr)
         ]
-        data = data + [(F'Маркер {num + 1}', float(offset)) for num, offset in enumerate(self._domain._markerOffset)]
 
-        # TODO сменить единицу измерения частоты отстройки
-        values = fedit(data=data, title='Настройки')
+        values = fedit(data=data, title='Settings')
+        if not values:
+            return
+
+        self._updateStatWidgetVisibility(values)
+
+        self.on_measurementFinished()
+
+    @pyqtSlot()
+    def on_btnOffset_clicked(self):
+        data = [
+            ('Noise offset (F1)', self._domain._offsetF1),
+            ('Noise offset (F2)', self._domain._offsetF2),
+            ('Noise offset (F3)', self._domain._offsetF3),
+            ('Noise offset (F4)', self._domain._offsetF4),
+            ('Noise offset (F5)', self._domain._offsetF5),
+            ('Freq offset', self._domain._freqOffset / 1_000_000),
+            ('Power offset', self._domain._ampOffset),
+            ('Current offset', self._domain._curOffset * 1000),
+        ]
+        data = data + [(F'Marker {num + 1}', float(offset)) for num, offset in enumerate(self._domain._markerOffset)]
+
+        values = fedit(data=data, title='Settings')
         if not values:
             return
 
         self._domain.applySettings(Settings.from_values(values))
-
-        self._show_stats = values[4]
-        self._ui.widgetStats.setVisible(self._show_stats)
-        # if self._domain._markerOffset != values[5:]:
 
         self.on_measurementFinished()
 
@@ -311,6 +362,10 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_measurementFinished(self):
         self._measureModel.init()
+
+        if not self._domain._freqs:
+            return
+
         self._markerModel.updateModel(self._domain.ampsForMarkers(self._markerModel.markers))
 
         self._plotWidget._title = ""
@@ -333,4 +388,18 @@ class MainWindow(QMainWindow):
 
     # helpers
     def _failWith(self, message):
-        QMessageBox.information(self, 'Ошибка', message)
+        QMessageBox.information(self, 'Error', message)
+
+    def _updateStatWidgetVisibility(self, values):
+        self._ui.widgetStats.setVisible(any(values))
+
+        self._show_freq, self._show_amp, self._show_curr = values
+
+        self._ui.lblFreq.setVisible(self._show_freq)
+        self._ui.editFreq.setVisible(self._show_freq)
+
+        self._ui.lblAmp.setVisible(self._show_amp)
+        self._ui.editAmp.setVisible(self._show_amp)
+
+        self._ui.lblCur.setVisible(self._show_curr)
+        self._ui.editCur.setVisible(self._show_curr)

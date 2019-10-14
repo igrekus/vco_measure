@@ -47,12 +47,18 @@ class Domain(QObject):
         self._vcoCharMeasurement = VCOCharMeasurement()
 
         self._offset = 0.0
+        self._offsetF1 = 0.0
+        self._offsetF2 = 0.0
+        self._offsetF3 = 0.0
+        self._offsetF4 = 0.0
+        self._offsetF5 = 0.0
         self._freqOffset = 0.0
         self._ampOffset = 0.0
         self._curOffset = 0.0
         self._markerOffset = [0.0] * 5
 
         self._freqs = list()
+        self._raw_amps = list()
         self._amps = list()
         self._smoothAmps = list()
 
@@ -65,7 +71,12 @@ class Domain(QObject):
         self._amps.clear()
 
     def applySettings(self, settings):
-        self._offset = settings.offset
+        self._markerOffset.clear()
+        self._offsetF1 = settings.offsetF1
+        self._offsetF2 = settings.offsetF2
+        self._offsetF3 = settings.offsetF3
+        self._offsetF4 = settings.offsetF4
+        self._offsetF5 = settings.offsetF5
         self._freqOffset = settings.freqOffset
         self._ampOffset = settings.ampOffset
         self._curOffset = settings.curOffset
@@ -95,17 +106,13 @@ class Domain(QObject):
 
     def _measureFunc(self, params: Params):
         print(f'start measurement task')
-        self._freqs, self._amps, self._freq, self._amp, self._cur = self._instruments.measure(params)
+        self._freqs, self._raw_amps, self._freq, self._amp, self._cur = self._instruments.measure(params)
         print('end measurement task')
 
     def _processingFunc(self):
         print('processing stats')
-        self._amps = list(map(lambda x: x + self._offset, self._amps))
+        self._amps = list(map(lambda x: x + self._offset, self._raw_amps))
         self._smoothAmps = savgol_filter(self._amps, 31, 3)
-
-        self._amp = float(self._amp) + self._ampOffset
-        self._freq = float(self._freq) + self._freqOffset
-        self._cur = float(self._cur) + self._curOffset
 
         self.measureFinished.emit()
 
@@ -122,6 +129,8 @@ class Domain(QObject):
             return self._amps[row]
 
     def ampsForMarkers(self, markers):
+        if not self._freqs:
+            return []
         amps = [self._smoothAmps[self._freqs.index(min(self._freqs, key=lambda x: abs(freq - x)))] for freq in markers]
         amps = [amp + offset for amp, offset in zip(amps, self._markerOffset)]
         return amps
@@ -149,4 +158,16 @@ class Domain(QObject):
     @property
     def smoothYs(self):
         return self._smoothAmps
+
+    @property
+    def freq(self):
+        return float(self._freq) + self._freqOffset
+
+    @property
+    def amp(self):
+        return float(self._amp) + self._ampOffset
+
+    @property
+    def cur(self):
+        return float(self._cur) + self._curOffset
 
