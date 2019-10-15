@@ -114,7 +114,7 @@
              </size>
             </property>
             <property name="title">
-             <string>Frequency</string>
+             <string>Frequency offset</string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
@@ -122,7 +122,7 @@
                <item row="0" column="0">
                 <widget class="QLabel" name="label">
                  <property name="text">
-                  <string>Fstart=</string>
+                  <string>F1</string>
                  </property>
                 </widget>
                </item>
@@ -145,7 +145,7 @@
                <item row="1" column="0">
                 <widget class="QLabel" name="label_2">
                  <property name="text">
-                  <string>Fend=</string>
+                  <string>F2</string>
                  </property>
                 </widget>
                </item>
@@ -196,7 +196,7 @@
                   <bool>false</bool>
                  </property>
                  <property name="text">
-                  <string>Usup1=</string>
+                  <string>U1</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -228,7 +228,7 @@
                   <bool>false</bool>
                  </property>
                  <property name="text">
-                  <string>Usup2=</string>
+                  <string>U2</string>
                  </property>
                 </widget>
                </item>
@@ -254,7 +254,7 @@
                     <bool>false</bool>
                    </property>
                    <property name="text">
-                    <string>Uctrl=</string>
+                    <string>Udut</string>
                    </property>
                    <property name="checked">
                     <bool>true</bool>
@@ -318,7 +318,7 @@
              <item>
               <widget class="QLabel" name="lblCorr">
                <property name="text">
-                <string>Corr=</string>
+                <string>Corr</string>
                </property>
               </widget>
              </item>
@@ -341,7 +341,7 @@
              <item>
               <widget class="QLabel" name="lblAver">
                <property name="text">
-                <string>Aver=</string>
+                <string>Aver</string>
                </property>
               </widget>
              </item>
