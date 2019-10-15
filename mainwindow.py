@@ -216,7 +216,7 @@ class MainWindow(QMainWindow):
         )
 
     def _updateStatDisplay(self):
-        self._ui.editFreq.setText(f'{round(self._domain.freq / 1_000_000, 2)} MHZ')
+        self._ui.editFreq.setText(f'{round(self._domain.freq / 1_000_000, 2)} MHz')
         self._ui.editAmp.setText(f'{round(self._domain.amp, 2)} dBm')
         self._ui.editCur.setText(f'{round(self._domain.cur * 1_000, 2)} mA')
 

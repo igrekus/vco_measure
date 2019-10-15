@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Phase noise analysis -- PNA20</string>
+   <string>Anapico APPH Signal Source analyzer GUI</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icon/ap_icon_32.png</normaloff>icon/ap_icon_32.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -181,7 +185,7 @@
              </size>
             </property>
             <property name="title">
-             <string>Питание</string>
+             <string>Supply</string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>

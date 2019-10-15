@@ -25,8 +25,8 @@ class PhasePlotWidget(QWidget):
 
     def _init(self):
         self._plot.set_title(self._title)
-        self._plot.set_xlabel('Freq, Hz')
-        self._plot.set_ylabel('Phase noise, dBn/Hz')
+        self._plot.set_xlabel('Offset frequency, Hz')
+        self._plot.set_ylabel('Phase noise, dBc/Hz')
         self._plot.set_xscale('log')
         # self._plot.set_xlim(pars['xlim'][0], pars['xlim'][1])
         # self._plot.set_ylim(pars['ylim'][0], pars['ylim'][1])

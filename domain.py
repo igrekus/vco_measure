@@ -36,7 +36,7 @@ class Domain(QObject):
     measureFinished = pyqtSignal()
     vcoCharMeasurementFinished = pyqtSignal()
 
-    headers = ['F, Гц', 'Шум, dBc/Hz']
+    headers = ['F, Hz', 'Noise, dBc/Hz']
 
     def __init__(self, parent=None):
         super().__init__(parent)
