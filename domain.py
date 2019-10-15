@@ -1,3 +1,6 @@
+import ast
+import os
+
 from PyQt5.QtCore import QObject, QRunnable, QThreadPool, pyqtSignal
 from attr import attrs, attrib
 from scipy.signal import savgol_filter
@@ -36,7 +39,7 @@ class Domain(QObject):
     measureFinished = pyqtSignal()
     vcoCharMeasurementFinished = pyqtSignal()
 
-    headers = ['F, Гц', 'Шум, dBc/Hz']
+    headers = ['F, Hz', 'Noise, dBc/Hz']
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -66,9 +69,37 @@ class Domain(QObject):
         self._amp = 0.0
         self._cur = 0.0
 
+        self._loadParams()
+
     def _clear(self):
         self._freqs.clear()
         self._amps.clear()
+
+    def _loadParams(self):
+        param_file = 'param.ini'
+        if not os.path.isfile(param_file):
+            return
+        with open(param_file) as f:
+            for line in f.readlines():
+                label, value = line.strip().split('=')
+                if label == 'off1':
+                    self._offsetF1 = float(value)
+                elif label == 'off2':
+                    self._offsetF2 = float(value)
+                elif label == 'off3':
+                    self._offsetF3 = float(value)
+                elif label == 'off4':
+                    self._offsetF4 = float(value)
+                elif label == 'off5':
+                    self._offsetF5 = float(value)
+                elif label == 'freq':
+                    self._freqOffset = float(value)
+                elif label == 'amp':
+                    self._ampOffset = float(value)
+                elif label == 'cur':
+                    self._curOffset = float(value)
+                elif label == 'mark':
+                    self._markerOffset = ast.literal_eval(value)
 
     def applySettings(self, settings):
         self._markerOffset.clear()
@@ -81,6 +112,18 @@ class Domain(QObject):
         self._ampOffset = settings.ampOffset
         self._curOffset = settings.curOffset
         self._markerOffset = settings.markerOffset
+        with open('param.ini', mode='wt', encoding='utf-8') as f:
+            f.writelines([
+                f'off1={self._offsetF1}\n',
+                f'off2={self._offsetF2}\n',
+                f'off3={self._offsetF3}\n',
+                f'off4={self._offsetF4}\n',
+                f'off5={self._offsetF5}\n',
+                f'freq={self._freqOffset}\n',
+                f'amp={self._ampOffset}\n',
+                f'cur={self._curOffset}\n',
+                f'mark={self._markerOffset}\n',
+            ])
 
     def connect(self):
         print('find instruments')

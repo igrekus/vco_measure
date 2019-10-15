@@ -1,6 +1,6 @@
 from PyQt5 import uic
-from PyQt5.QtGui import QRegularExpressionValidator
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout
+from PyQt5.QtGui import QRegularExpressionValidator, QKeySequence
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout, QAction
 from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression
 from attr import attrs, attrib
 
@@ -94,6 +94,8 @@ class MainWindow(QMainWindow):
 
         self._setupSignals()
         self._modeBeforeConnect()
+
+        self._ui.btnOffset.setVisible(False)
 
     def _setupSignals(self):
         self._domain.measureFinished.connect(self.on_measurementFinished)
@@ -216,7 +218,7 @@ class MainWindow(QMainWindow):
         )
 
     def _updateStatDisplay(self):
-        self._ui.editFreq.setText(f'{round(self._domain.freq / 1_000_000, 2)} MHZ')
+        self._ui.editFreq.setText(f'{round(self._domain.freq / 1_000_000, 2)} MHz')
         self._ui.editAmp.setText(f'{round(self._domain.amp, 2)} dBm')
         self._ui.editCur.setText(f'{round(self._domain.cur * 1_000, 2)} mA')
 
@@ -240,6 +242,8 @@ class MainWindow(QMainWindow):
         elif event.key() == Qt.Key_F5:
             self._domain._offset = self._domain._offsetF5
             self._domain._processingFunc()
+        elif event.key() == Qt.Key_F12:
+            self.on_btnOffset_clicked()
 
         super().keyPressEvent(event)
 
