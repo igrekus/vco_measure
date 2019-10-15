@@ -1,6 +1,6 @@
 from PyQt5 import uic
-from PyQt5.QtGui import QRegularExpressionValidator
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout
+from PyQt5.QtGui import QRegularExpressionValidator, QKeySequence
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout, QAction
 from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression
 from attr import attrs, attrib
 
@@ -94,6 +94,8 @@ class MainWindow(QMainWindow):
 
         self._setupSignals()
         self._modeBeforeConnect()
+
+        self._ui.btnOffset.setVisible(False)
 
     def _setupSignals(self):
         self._domain.measureFinished.connect(self.on_measurementFinished)
@@ -240,6 +242,8 @@ class MainWindow(QMainWindow):
         elif event.key() == Qt.Key_F5:
             self._domain._offset = self._domain._offsetF5
             self._domain._processingFunc()
+        elif event.key() == Qt.Key_F12:
+            self.on_btnOffset_clicked()
 
         super().keyPressEvent(event)
 
