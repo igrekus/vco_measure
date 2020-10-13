@@ -10,6 +10,33 @@ from vcocharmeasurement import VCOCharMeasurement
 
 
 @attrs
+class Settings:
+    markerOffset = attrib(type=list)
+    offsetF1 = attrib(type=float, default=0.0)
+    offsetF2 = attrib(type=float, default=0.0)
+    offsetF3 = attrib(type=float, default=0.0)
+    offsetF4 = attrib(type=float, default=0.0)
+    offsetF5 = attrib(type=float, default=0.0)
+    freqOffset = attrib(type=float, default=0.0)
+    ampOffset = attrib(type=float, default=0.0)
+    curOffset = attrib(type=float, default=0.0)
+
+    @classmethod
+    def from_values(cls, data):
+        return cls(
+            offsetF1=float(data[0]),
+            offsetF2=float(data[1]),
+            offsetF3=float(data[2]),
+            offsetF4=float(data[3]),
+            offsetF5=float(data[4]),
+            freqOffset=float(data[5]) * 1_000_000,
+            ampOffset=float(data[6]),
+            curOffset=float(data[7]) / 1_000,
+            markerOffset=[[float(v) for v in d] for d in data[8:]]
+        )
+
+
+@attrs
 class Params:
     f1 = attrib(type=float, default=0.0)
     f2 = attrib(type=float, default=100.0)
