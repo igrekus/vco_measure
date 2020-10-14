@@ -338,13 +338,14 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_btnOffset_clicked(self):
+        offs = self._domain._markerOffsets
         dlg = OffsetDialog(settings=Settings(
             markerOffset=[
-                [1, 2, 3, 4, 5],
-                [6, 7, 8, 9, 10],
-                [11, 12, 13, 14, 15],
-                [16, 17, 18, 19, 20],
-                [21, 22, 23, 24, 25],
+                [offs[0][0], offs[0][1], offs[0][2], offs[0][3], offs[0][4]],
+                [offs[1][0], offs[1][1], offs[1][2], offs[1][3], offs[1][4]],
+                [offs[2][0], offs[2][1], offs[2][2], offs[2][3], offs[2][4]],
+                [offs[3][0], offs[3][1], offs[3][2], offs[3][3], offs[3][4]],
+                [offs[4][0], offs[4][1], offs[4][2], offs[4][3], offs[4][4]],
             ],
             offsetF1=self._domain._offsetF1,
             offsetF2=self._domain._offsetF2,
