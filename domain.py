@@ -10,6 +10,20 @@ from vcocharmeasurement import VCOCharMeasurement
 
 
 @attrs
+class Settings:
+    markerOffset = attrib(type=list)
+    deltaFs = attrib(type=list)
+    offsetF1 = attrib(type=float, default=0.0)
+    offsetF2 = attrib(type=float, default=0.0)
+    offsetF3 = attrib(type=float, default=0.0)
+    offsetF4 = attrib(type=float, default=0.0)
+    offsetF5 = attrib(type=float, default=0.0)
+    freqOffset = attrib(type=float, default=0.0)
+    ampOffset = attrib(type=float, default=0.0)
+    curOffset = attrib(type=float, default=0.0)
+
+
+@attrs
 class Params:
     f1 = attrib(type=float, default=0.0)
     f2 = attrib(type=float, default=100.0)
@@ -58,7 +72,9 @@ class Domain(QObject):
         self._freqOffset = 0.0
         self._ampOffset = 0.0
         self._curOffset = 0.0
-        self._markerOffset = [0.0] * 5
+        self._markerOffsets = [[0.0] * 5] * 5
+        self._markerOffset = self._markerOffsets[0]
+        self._deltaFs = [0.0] * 6
 
         self._freqs = list()
         self._raw_amps = list()
@@ -99,10 +115,12 @@ class Domain(QObject):
                 elif label == 'cur':
                     self._curOffset = float(value)
                 elif label == 'mark':
-                    self._markerOffset = ast.literal_eval(value)
+                    self._markerOffsets = ast.literal_eval(value)
+                elif label == 'deltas':
+                    self._deltaFs = ast.literal_eval(value)
 
     def applySettings(self, settings):
-        self._markerOffset.clear()
+        self._markerOffsets.clear()
         self._offsetF1 = settings.offsetF1
         self._offsetF2 = settings.offsetF2
         self._offsetF3 = settings.offsetF3
@@ -111,7 +129,8 @@ class Domain(QObject):
         self._freqOffset = settings.freqOffset
         self._ampOffset = settings.ampOffset
         self._curOffset = settings.curOffset
-        self._markerOffset = settings.markerOffset
+        self._markerOffsets = settings.markerOffset
+        self._deltaFs = settings.deltaFs
         with open('param.ini', mode='wt', encoding='utf-8') as f:
             f.writelines([
                 f'off1={self._offsetF1}\n',
@@ -122,7 +141,8 @@ class Domain(QObject):
                 f'freq={self._freqOffset}\n',
                 f'amp={self._ampOffset}\n',
                 f'cur={self._curOffset}\n',
-                f'mark={self._markerOffset}\n',
+                f'mark={self._markerOffsets}\n',
+                f'deltas={self._deltaFs}\n'
             ])
 
     def connect(self):

@@ -1,42 +1,15 @@
 from PyQt5 import uic
-from PyQt5.QtGui import QRegularExpressionValidator, QKeySequence
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout, QAction
+from PyQt5.QtGui import QRegularExpressionValidator
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout, QDialog
 from PyQt5.QtCore import Qt, pyqtSlot, QRegularExpression
-from attr import attrs, attrib
 
-from domain import Domain, Params
+from domain import Domain, Params, Settings
 from markermodel import MarkerModel
 from measuremodel import MeasureModel
 from formlayout.formlayout import fedit
+from offsetdialog import OffsetDialog
 from phaseplotwidget import PhasePlotWidget
 from vcocharwidget import VCOCharWidget
-
-
-@attrs
-class Settings:
-    markerOffset = attrib(type=list)
-    offsetF1 = attrib(type=float, default=0.0)
-    offsetF2 = attrib(type=float, default=0.0)
-    offsetF3 = attrib(type=float, default=0.0)
-    offsetF4 = attrib(type=float, default=0.0)
-    offsetF5 = attrib(type=float, default=0.0)
-    freqOffset = attrib(type=float, default=0.0)
-    ampOffset = attrib(type=float, default=0.0)
-    curOffset = attrib(type=float, default=0.0)
-
-    @classmethod
-    def from_values(cls, data):
-        return cls(
-            offsetF1=float(data[0]),
-            offsetF2=float(data[1]),
-            offsetF3=float(data[2]),
-            offsetF4=float(data[3]),
-            offsetF5=float(data[4]),
-            freqOffset=float(data[5]) * 1_000_000,
-            ampOffset=float(data[6]),
-            curOffset=float(data[7]) / 1_000,
-            markerOffset=[float(d) for d in data[8:]]
-        )
 
 
 class MainWindow(QMainWindow):
@@ -227,20 +200,56 @@ class MainWindow(QMainWindow):
         self.refreshView()
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_F1:
+        key = event.key()
+        if key == Qt.Key_F1:
             self._domain._offset = self._domain._offsetF1
+            self._domain._markerOffset = self._domain._markerOffsets[0]
             self._domain._processingFunc()
-        elif event.key() == Qt.Key_F2:
+        elif key == Qt.Key_F2:
             self._domain._offset = self._domain._offsetF2
+            self._domain._markerOffset = self._domain._markerOffsets[1]
             self._domain._processingFunc()
-        elif event.key() == Qt.Key_F3:
+        elif key == Qt.Key_F3:
             self._domain._offset = self._domain._offsetF3
+            self._domain._markerOffset = self._domain._markerOffsets[2]
             self._domain._processingFunc()
-        elif event.key() == Qt.Key_F4:
+        elif key == Qt.Key_F4:
             self._domain._offset = self._domain._offsetF4
+            self._domain._markerOffset = self._domain._markerOffsets[3]
             self._domain._processingFunc()
-        elif event.key() == Qt.Key_F5:
+        elif key == Qt.Key_F5:
             self._domain._offset = self._domain._offsetF5
+            self._domain._markerOffset = self._domain._markerOffsets[4]
+            self._domain._processingFunc()
+        elif key == Qt.Key_F6:
+            offset = self._domain._deltaFs[0]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
+            self._domain._processingFunc()
+        elif key == Qt.Key_F7:
+            offset = self._domain._deltaFs[1]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
+            self._domain._processingFunc()
+        elif key == Qt.Key_F8:
+            offset = self._domain._deltaFs[2]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
+            self._domain._processingFunc()
+        elif key == Qt.Key_F9:
+            offset = self._domain._deltaFs[3]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
+            self._domain._processingFunc()
+        elif key == Qt.Key_F10:
+            offset = self._domain._deltaFs[4]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
+            self._domain._processingFunc()
+        elif key == Qt.Key_F11:
+            offset = self._domain._deltaFs[5]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
             self._domain._processingFunc()
         elif event.key() == Qt.Key_F12:
             self.on_btnOffset_clicked()
@@ -329,23 +338,29 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_btnOffset_clicked(self):
-        data = [
-            ('Noise offset (F1)', self._domain._offsetF1),
-            ('Noise offset (F2)', self._domain._offsetF2),
-            ('Noise offset (F3)', self._domain._offsetF3),
-            ('Noise offset (F4)', self._domain._offsetF4),
-            ('Noise offset (F5)', self._domain._offsetF5),
-            ('Freq offset', self._domain._freqOffset / 1_000_000),
-            ('Power offset', self._domain._ampOffset),
-            ('Current offset', self._domain._curOffset * 1000),
-        ]
-        data = data + [(F'Marker {num + 1}', float(offset)) for num, offset in enumerate(self._domain._markerOffset)]
-
-        values = fedit(data=data, title='Settings')
-        if not values:
+        dlg = OffsetDialog(settings=Settings(
+            markerOffset=[
+                [1, 2, 3, 4, 5],
+                [6, 7, 8, 9, 10],
+                [11, 12, 13, 14, 15],
+                [16, 17, 18, 19, 20],
+                [21, 22, 23, 24, 25],
+            ],
+            offsetF1=self._domain._offsetF1,
+            offsetF2=self._domain._offsetF2,
+            offsetF3=self._domain._offsetF3,
+            offsetF4=self._domain._offsetF4,
+            offsetF5=self._domain._offsetF5,
+            freqOffset=self._domain._freqOffset / 1_000_000,
+            ampOffset=self._domain._ampOffset,
+            curOffset=self._domain._curOffset * 1000,
+            deltaFs=self._domain._deltaFs,
+        ))
+        if dlg.exec() != QDialog.Accepted:
+            print('dlg abort')
             return
 
-        self._domain.applySettings(Settings.from_values(values))
+        self._domain.applySettings(dlg.settings)
 
         self.on_measurementFinished()
 
