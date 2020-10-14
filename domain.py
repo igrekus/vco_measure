@@ -85,7 +85,8 @@ class Domain(QObject):
         self._freqOffset = 0.0
         self._ampOffset = 0.0
         self._curOffset = 0.0
-        self._markerOffset = [0.0] * 5
+        self._markerOffsets = [[0.0] * 5] * 5
+        self._markerOffset = self._markerOffsets[0]
 
         self._freqs = list()
         self._raw_amps = list()
@@ -126,10 +127,10 @@ class Domain(QObject):
                 elif label == 'cur':
                     self._curOffset = float(value)
                 elif label == 'mark':
-                    self._markerOffset = ast.literal_eval(value)
+                    self._markerOffsets = ast.literal_eval(value)
 
     def applySettings(self, settings):
-        self._markerOffset.clear()
+        self._markerOffsets.clear()
         self._offsetF1 = settings.offsetF1
         self._offsetF2 = settings.offsetF2
         self._offsetF3 = settings.offsetF3
@@ -138,7 +139,7 @@ class Domain(QObject):
         self._freqOffset = settings.freqOffset
         self._ampOffset = settings.ampOffset
         self._curOffset = settings.curOffset
-        self._markerOffset = settings.markerOffset
+        self._markerOffsets = settings.markerOffset
         with open('param.ini', mode='wt', encoding='utf-8') as f:
             f.writelines([
                 f'off1={self._offsetF1}\n',
@@ -149,7 +150,7 @@ class Domain(QObject):
                 f'freq={self._freqOffset}\n',
                 f'amp={self._ampOffset}\n',
                 f'cur={self._curOffset}\n',
-                f'mark={self._markerOffset}\n',
+                f'mark={self._markerOffsets}\n',
             ])
 
     def connect(self):

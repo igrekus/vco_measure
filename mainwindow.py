@@ -200,21 +200,39 @@ class MainWindow(QMainWindow):
         self.refreshView()
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_F1:
+        key = event.key()
+        if key == Qt.Key_F1:
             self._domain._offset = self._domain._offsetF1
+            self._domain._markerOffset = self._domain._markerOffsets[0]
             self._domain._processingFunc()
-        elif event.key() == Qt.Key_F2:
+        elif key == Qt.Key_F2:
             self._domain._offset = self._domain._offsetF2
+            self._domain._markerOffset = self._domain._markerOffsets[1]
             self._domain._processingFunc()
-        elif event.key() == Qt.Key_F3:
+        elif key == Qt.Key_F3:
             self._domain._offset = self._domain._offsetF3
+            self._domain._markerOffset = self._domain._markerOffsets[2]
             self._domain._processingFunc()
-        elif event.key() == Qt.Key_F4:
+        elif key == Qt.Key_F4:
             self._domain._offset = self._domain._offsetF4
+            self._domain._markerOffset = self._domain._markerOffsets[3]
             self._domain._processingFunc()
-        elif event.key() == Qt.Key_F5:
+        elif key == Qt.Key_F5:
             self._domain._offset = self._domain._offsetF5
+            self._domain._markerOffset = self._domain._markerOffsets[4]
             self._domain._processingFunc()
+        elif key == Qt.Key_F6:
+            print('key', key)
+        elif key == Qt.Key_F7:
+            print('key', key)
+        elif key == Qt.Key_F8:
+            print('key', key)
+        elif key == Qt.Key_F9:
+            print('key', key)
+        elif key == Qt.Key_F10:
+            print('key', key)
+        elif key == Qt.Key_F11:
+            print('key', key)
         elif event.key() == Qt.Key_F12:
             self.on_btnOffset_clicked()
 
@@ -323,11 +341,7 @@ class MainWindow(QMainWindow):
             print('dlg abort')
             return
 
-        new_sets = dlg.settings
-
-        print(new_sets)
-        return
-        self._domain.applySettings(Settings.from_values(values))
+        self._domain.applySettings(dlg.settings)
 
         self.on_measurementFinished()
 
