@@ -12,6 +12,7 @@ from vcocharmeasurement import VCOCharMeasurement
 @attrs
 class Settings:
     markerOffset = attrib(type=list)
+    deltaFs = attrib(type=list)
     offsetF1 = attrib(type=float, default=0.0)
     offsetF2 = attrib(type=float, default=0.0)
     offsetF3 = attrib(type=float, default=0.0)
@@ -20,20 +21,6 @@ class Settings:
     freqOffset = attrib(type=float, default=0.0)
     ampOffset = attrib(type=float, default=0.0)
     curOffset = attrib(type=float, default=0.0)
-
-    @classmethod
-    def from_values(cls, data):
-        return cls(
-            offsetF1=float(data[0]),
-            offsetF2=float(data[1]),
-            offsetF3=float(data[2]),
-            offsetF4=float(data[3]),
-            offsetF5=float(data[4]),
-            freqOffset=float(data[5]) * 1_000_000,
-            ampOffset=float(data[6]),
-            curOffset=float(data[7]) / 1_000,
-            markerOffset=[[float(v) for v in d] for d in data[8:]]
-        )
 
 
 @attrs
@@ -87,6 +74,7 @@ class Domain(QObject):
         self._curOffset = 0.0
         self._markerOffsets = [[0.0] * 5] * 5
         self._markerOffset = self._markerOffsets[0]
+        self._deltaFs = [0.0] * 6
 
         self._freqs = list()
         self._raw_amps = list()
@@ -128,6 +116,8 @@ class Domain(QObject):
                     self._curOffset = float(value)
                 elif label == 'mark':
                     self._markerOffsets = ast.literal_eval(value)
+                elif label == 'deltas':
+                    self._deltaFs = ast.literal_eval(value)
 
     def applySettings(self, settings):
         self._markerOffsets.clear()
@@ -140,6 +130,7 @@ class Domain(QObject):
         self._ampOffset = settings.ampOffset
         self._curOffset = settings.curOffset
         self._markerOffsets = settings.markerOffset
+        self._deltaFs = settings.deltaFs
         with open('param.ini', mode='wt', encoding='utf-8') as f:
             f.writelines([
                 f'off1={self._offsetF1}\n',
@@ -151,6 +142,7 @@ class Domain(QObject):
                 f'amp={self._ampOffset}\n',
                 f'cur={self._curOffset}\n',
                 f'mark={self._markerOffsets}\n',
+                f'deltas={self._deltaFs}\n'
             ])
 
     def connect(self):

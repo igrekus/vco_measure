@@ -55,6 +55,13 @@ class OffsetDialog(QDialog):
         self._ui.spinM4_5.setValue(settings.markerOffset[3][4])
         self._ui.spinM5_5.setValue(settings.markerOffset[4][4])
 
+        self._ui.spinDeltaF6.setValue(settings.deltaFs[0])
+        self._ui.spinDeltaF7.setValue(settings.deltaFs[1])
+        self._ui.spinDeltaF8.setValue(settings.deltaFs[2])
+        self._ui.spinDeltaF9.setValue(settings.deltaFs[3])
+        self._ui.spinDeltaF10.setValue(settings.deltaFs[4])
+        self._ui.spinDeltaF11.setValue(settings.deltaFs[5])
+
         self._settings = settings
 
     @pyqtSlot()
@@ -73,6 +80,14 @@ class OffsetDialog(QDialog):
                 [ui.spinM4_1.value(), ui.spinM4_2.value(), ui.spinM4_3.value(), ui.spinM4_4.value(), ui.spinM4_5.value()],
                 [ui.spinM5_1.value(), ui.spinM5_2.value(), ui.spinM5_3.value(), ui.spinM5_4.value(), ui.spinM5_5.value()],
             ],
+            deltaFs=[
+                ui.spinDeltaF6.value(),
+                ui.spinDeltaF7.value(),
+                ui.spinDeltaF8.value(),
+                ui.spinDeltaF9.value(),
+                ui.spinDeltaF10.value(),
+                ui.spinDeltaF11.value(),
+            ],
             offsetF1=ui.spinF1.value(),
             offsetF2=ui.spinF2.value(),
             offsetF3=ui.spinF3.value(),
@@ -80,7 +95,7 @@ class OffsetDialog(QDialog):
             offsetF5=ui.spinF5.value(),
             freqOffset=ui.spinFreq.value(),
             ampOffset=ui.spinAmp.value(),
-            curOffset=ui.spinCurr.value()
+            curOffset=ui.spinCurr.value(),
         )
 
     @property

@@ -222,17 +222,35 @@ class MainWindow(QMainWindow):
             self._domain._markerOffset = self._domain._markerOffsets[4]
             self._domain._processingFunc()
         elif key == Qt.Key_F6:
-            print('key', key)
+            offset = self._domain._deltaFs[0]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
+            self._domain._processingFunc()
         elif key == Qt.Key_F7:
-            print('key', key)
+            offset = self._domain._deltaFs[1]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
+            self._domain._processingFunc()
         elif key == Qt.Key_F8:
-            print('key', key)
+            offset = self._domain._deltaFs[2]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
+            self._domain._processingFunc()
         elif key == Qt.Key_F9:
-            print('key', key)
+            offset = self._domain._deltaFs[3]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
+            self._domain._processingFunc()
         elif key == Qt.Key_F10:
-            print('key', key)
+            offset = self._domain._deltaFs[4]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
+            self._domain._processingFunc()
         elif key == Qt.Key_F11:
-            print('key', key)
+            offset = self._domain._deltaFs[5]
+            self._domain._offset += offset
+            self._domain._markerOffset = [off + offset for off in self._domain._markerOffset]
+            self._domain._processingFunc()
         elif event.key() == Qt.Key_F12:
             self.on_btnOffset_clicked()
 
@@ -335,7 +353,8 @@ class MainWindow(QMainWindow):
             offsetF5=self._domain._offsetF5,
             freqOffset=self._domain._freqOffset / 1_000_000,
             ampOffset=self._domain._ampOffset,
-            curOffset=self._domain._curOffset * 1000
+            curOffset=self._domain._curOffset * 1000,
+            deltaFs=self._domain._deltaFs,
         ))
         if dlg.exec() != QDialog.Accepted:
             print('dlg abort')
