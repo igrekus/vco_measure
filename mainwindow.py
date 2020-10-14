@@ -203,23 +203,23 @@ class MainWindow(QMainWindow):
         key = event.key()
         if key == Qt.Key_F1:
             self._domain._offset = self._domain._offsetF1
-            self._domain._markerOffset = self._domain._markerOffsets[0]
+            self._domain._markerOffset = [of[0] for of in self._domain._markerOffsets]
             self._domain._processingFunc()
         elif key == Qt.Key_F2:
             self._domain._offset = self._domain._offsetF2
-            self._domain._markerOffset = self._domain._markerOffsets[1]
+            self._domain._markerOffset = [of[1] for of in self._domain._markerOffsets]
             self._domain._processingFunc()
         elif key == Qt.Key_F3:
             self._domain._offset = self._domain._offsetF3
-            self._domain._markerOffset = self._domain._markerOffsets[2]
+            self._domain._markerOffset = [of[2] for of in self._domain._markerOffsets]
             self._domain._processingFunc()
         elif key == Qt.Key_F4:
             self._domain._offset = self._domain._offsetF4
-            self._domain._markerOffset = self._domain._markerOffsets[3]
+            self._domain._markerOffset = [of[3] for of in self._domain._markerOffsets]
             self._domain._processingFunc()
         elif key == Qt.Key_F5:
             self._domain._offset = self._domain._offsetF5
-            self._domain._markerOffset = self._domain._markerOffsets[4]
+            self._domain._markerOffset = [of[4] for of in self._domain._markerOffsets]
             self._domain._processingFunc()
         elif key == Qt.Key_F6:
             offset = self._domain._deltaFs[0]
