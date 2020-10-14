@@ -64,7 +64,7 @@ class MarkerModel(QAbstractTableModel):
         row = index.row()
 
         if role == Qt.DisplayRole:
-            return QVariant(self._data[row][col])
+            return str(self._data[row][col])
         elif role == Qt.EditRole:
             if col == self.ColFreq:
                 return QVariant(self._data[row][col])
